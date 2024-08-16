@@ -24,8 +24,26 @@
     <div class="container mt-2">
         <div class="row ">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>ปักหมุดฝาย</h3>
+                <h4>ปักหมุดฝาย</h4>
                 <p class="text-subtitle text-muted">บันทึกข้อมูลฝายที่ท่านสร้าง</p>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                    <span id="logout" style="display:none;">
+                        <table style="width:auto;">
+                            <tr>
+                                <td class="block"><img alt="" id="pictureUrl"></td>
+                                <td class="block">
+                                    <span class="badge bg-light-secondary" id="displayName"></span><br>
+                                    <!-- <span class="badge bg-light-info" id="statusMessage"></span> -->
+                                </td>
+                            </tr>
+                        </table>
+                    </span>
+                    <span id="login">
+                        <a id="buttonDiv" data-onsuccess="onSignIn"></a>
+                    </span>
+                </nav>
             </div>
         </div>
     </div>
@@ -46,7 +64,7 @@
                 </div>
                 <form id="checkDamForm" action="/api/submitform" method="POST" enctype="multipart/form-data">
                     <div class="modal-body">
-                        <input type="hidden" name="userid" id="userid" value="sss">
+                        <input type="hidden" name="userid" id="userid">
                         <label>ชื่อฝาย/สถานที่: </label>
                         <div class="form-group">
                             <input type="text" name="cdname" id="cdname" class="form-control">
@@ -98,6 +116,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.81.1/dist/L.Control.Locate.min.js"
     charset="utf-8"></script>
+<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/versions/2.22.3/sdk.js"></script>
 <script src="./app.js"></script>
 
 </html>

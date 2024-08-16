@@ -16,13 +16,24 @@ const pool = new Pool({
 console.log('DB_USER:', process.env.DB_USER);
 
 
-app.get('/api/hello', (req, res) => {
-    const sql = `INSERT INTO checkdam (cdname, cdcreator, cddetails, cdimage, userid) 
-        VALUES ('cdname}', 'cdcreator}', 'cddetail}', 'cdimage}', 'sss');`;
+app.post('/api/user', async (req, res) => {
+    const { userid, username } = req.body;
 
-    console.log(sql);
-    const result = pool.query(sql);
-    res.status(200).json({ message: 'Hello World!' });
+    try {
+        const result = await pool.query(
+            `INSERT INTO users (userid, username, updated_at)
+            VALUES ($1, $2, CURRENT_TIMESTAMP)
+            ON CONFLICT (userid) 
+            DO UPDATE SET username = EXCLUDED.username, updated_at = CURRENT_TIMESTAMP
+            RETURNING *`,
+            [userid, username]
+        );
+
+        res.status(200).json({ success: true, data: result.rows[0] });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: err.message });
+    }
 });
 
 const storage = multer.diskStorage({
@@ -38,23 +49,12 @@ const upload = multer({ storage: storage });
 
 app.post('/api/submitform', upload.single('cdimage'), async (req, res) => {
     const { cdname, cdcreator, cddetail, userid } = req.body;
-
     const cdimage = req.file ? req.file.path : null;
-    console.log(cdname, cdcreator, cddetail, cdimage, userid);
-
-
-
     try {
-        const sql = `INSERT INTO checkdam (cdname, cdcreator, cddetails, cdimage, userid) 
-        VALUES ('${cdname}', '${cdcreator}', '${cddetail}', '${cdimage}', '${userid}');`;
-
-        console.log(sql);
-        const result = await pool.query(sql);
-        // const result = await pool.query(
-        //     'INSERT INTO checkdam (cdname, cdcreator, cddetails, cdimage, userid) VALUES ($1, $2, $3, $4, $5);',
-        //     [cdname, cdcreator, cddetail, cdimage, userid]
-        // );
-
+        const result = await pool.query(
+            'INSERT INTO checkdam (cdname, cdcreator, cddetail, cdimage, userid) VALUES ($1, $2, $3, $4, $5);',
+            [cdname, cdcreator, cddetail, cdimage, userid]
+        );
         res.status(200).json({ success: true, data: result.rows[0] });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });

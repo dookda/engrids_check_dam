@@ -1,3 +1,53 @@
+const updateProfile = (params) => {
+    console.log(params);
+}
+
+liff.init({
+    liffId: "2006072569-DYNRWJaX", // Use own liffId
+    withLoginOnExternalBrowser: true, // Enable automatic login process
+}).then(() => {
+    // Start to use liff's api
+    liff.getProfile().then(profile => {
+        const userId = profile.userId;
+        const displayName = profile.displayName;
+        // const statusMessage = profile.statusMessage;
+        const pictureUrl = profile.pictureUrl;
+        // console.log(profile);
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('logout').style.display = 'block';
+        document.getElementById('pictureUrl').src = pictureUrl;
+        document.getElementById('displayName').innerHTML = displayName;
+        document.getElementById('userid').value = userId;
+
+        fetch('/api/user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userid: userId,
+                username: displayName
+            })
+        }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log(data.data);
+                } else {
+                    console.error('Error:', data.error);
+                }
+            }).catch(
+                err => console.error(err)
+            );
+    }).catch(
+        err => console.error(err)
+    );
+    console.log('LIFF init success');
+
+});
+
+document.getElementById('login').style.display = 'block';
+document.getElementById('logout').style.display = 'none';
+
 const map = L.map('map').setView([51.505, -0.09], 13);
 
 const gmap_road = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
