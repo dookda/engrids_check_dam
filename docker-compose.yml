@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: 1234
       # POSTGRES_DB: checkdam
     ports:
-      - "5433:5432"
+      - "5436:5432"
     volumes:
       - ./postgis:/docker-entrypoint-initdb.d
 
@@ -20,7 +20,7 @@ services:
     volumes:
       - ./nodejs:/app
     ports:
-      - "3000:3000"
+      - "3300:3000"
     command:
       - bash
       - -c
