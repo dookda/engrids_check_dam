@@ -3,9 +3,9 @@ services:
     image: postgis/postgis
     container_name: checkdam_postgis
     environment:
-      POSTGRES_USER: checkdam
-      POSTGRES_PASSWORD: checkdam
-      POSTGRES_DB: checkdam
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      # POSTGRES_DB: checkdam
     ports:
       - "5433:5432"
     volumes:
