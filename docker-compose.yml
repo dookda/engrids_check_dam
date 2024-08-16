@@ -1,0 +1,27 @@
+services:
+  postgis:
+    image: postgis/postgis
+    container_name: checkdam_postgis
+    environment:
+      POSTGRES_USER: checkdam
+      POSTGRES_PASSWORD: checkdam
+      POSTGRES_DB: checkdam
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./postgis:/docker-entrypoint-initdb.d
+
+  nodejs:
+    image: node:latest
+    container_name: checkdam_nodejs
+    working_dir: /app
+    depends_on:
+      - postgis
+    volumes:
+      - ./nodejs:/app
+    ports:
+      - "3000:3000"
+    command:
+      - bash
+      - -c
+      - npm i  && npm i -g nodemon && nodemon

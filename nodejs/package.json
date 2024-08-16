@@ -1,0 +1,21 @@
+{
+  "name": "checkdam",
+  "version": "1.0.0",
+  "description": "check dam project",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "checkdam"
+  ],
+  "author": "sakda homhuan",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "pg": "^8.12.0"
+  }
+}
