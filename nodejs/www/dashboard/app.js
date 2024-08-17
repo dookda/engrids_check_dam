@@ -1,49 +1,3 @@
-// const updateProfile = (params) => {
-//     console.log(params);
-// }
-
-// liff.init({
-//     liffId: "2006072569-DYNRWJaX", 
-//     withLoginOnExternalBrowser: true, 
-// }).then(() => {
-//     liff.getProfile().then(profile => {
-//         const userId = profile.userId;
-//         const displayName = profile.displayName;
-//         const pictureUrl = profile.pictureUrl;
-//         document.getElementById('login').style.display = 'none';
-//         document.getElementById('logout').style.display = 'block';
-//         document.getElementById('pictureUrl').src = pictureUrl;
-//         document.getElementById('displayName').innerHTML = displayName;
-//         document.getElementById('userid').value = userId;
-
-//         fetch('/api/user', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//             body: JSON.stringify({
-//                 userid: userId,
-//                 username: displayName
-//             })
-//         }).then(response => response.json())
-//             .then(data => {
-//                 if (data.success) {
-//                     console.log('ok');
-//                 } else {
-//                     console.error('Error:', data.error);
-//                 }
-//             }).catch(
-//                 err => console.error(err)
-//             );
-//     }).catch(
-//         err => console.error(err)
-//     );
-//     console.log('LIFF init success');
-
-// });
-
-// document.getElementById('login').style.display = 'block';
-// document.getElementById('logout').style.display = 'none';
 
 const map = L.map('map').setView([19.01056856174532, 99.0359886593147], 13);
 
@@ -78,36 +32,65 @@ const overlayMaps = {};
 
 L.control.layers(baseLayers, overlayMaps).addTo(map);
 
-const showCheckdam = () => {
-    fetch('/api/getcheckdam')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                data.data.forEach(item => {
-                    const marker = L.marker([item.lat, item.lng]).addTo(map);
-                    marker.on('click', () => {
-                        document.getElementById('modal-cdname').textContent = item.cdname;
-                        document.getElementById('modal-cdcreator').textContent = item.cdcreator;
-                        document.getElementById('modal-cddetail').textContent = item.cddetail;
+let checkdamData = [];
+fetch('/api/getcheckdam')
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            checkdamData = data.data;
+            displayMarkers(checkdamData); // Initially display all markers
+        } else {
+            console.error('Error:', data.error);
+        }
+    })
+    .catch(err => console.error(err));
 
-                        const cdimageElement = document.getElementById('modal-cdimage');
-                        if (item.cdimage) {
-                            cdimageElement.src = `/${item.cdimage}`;
-                            cdimageElement.style.display = 'block';
-                        } else {
-                            cdimageElement.style.display = 'none';
-                        }
+const displayMarkers = (data) => {
+    map.eachLayer((layer) => {
+        if (layer instanceof L.Marker) {
+            map.removeLayer(layer);
+        }
+    });
 
-                        const checkdamModal = new bootstrap.Modal(document.getElementById('checkdamModal'));
-                        checkdamModal.show();
-                    });
-                });
+    data.forEach(item => {
+        const marker = L.marker([item.lat, item.lng]).addTo(map);
+        marker.on('click', () => {
+            document.getElementById('modal-cdname').textContent = `ชื่อฝาย-สถานที่: ${item.cdname}`;
+            document.getElementById('modal-cdcreator').textContent = `ผู้สร้าง-ผู้ดูแล: ${item.cdcreator}`;
+            document.getElementById('modal-cddetail').textContent = `รายละเอียด: ${item.cddetail}`;
+
+            const thaiDate = new Date(item.cddate);
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const thaiDateString = thaiDate.toLocaleDateString('th-TH', options);
+            const buddhistYear = thaiDate.getFullYear() + 543;
+            const formattedThaiDate = thaiDateString.replace(thaiDate.getFullYear(), buddhistYear);
+
+            document.getElementById('modal-cddate').textContent = `วันที่สร้าง: ${formattedThaiDate}`;
+            document.getElementById('modal-cdcoords').textContent = `พิกัด: ${(item.lat).toFixed(4)}, ${(item.lng).toFixed(4)}`;
+
+            const cdimageElement = document.getElementById('modal-cdimage');
+            if (item.cdimage) {
+                cdimageElement.src = `/${item.cdimage}`;
+                cdimageElement.style.display = 'block'; // Show the image
             } else {
-                console.error('Error:', data.error);
+                cdimageElement.style.display = 'none'; // Hide the image element if there's no image
             }
-        })
-        .catch(err => console.error(err));
+
+            const checkdamModal = new bootstrap.Modal(document.getElementById('checkdamModal'));
+            checkdamModal.show();
+        });
+    });
 };
 
+document.getElementById('search').addEventListener('input', function () {
+    const searchText = this.value.toLowerCase();
 
-showCheckdam();
+    const filteredData = checkdamData.filter(item =>
+        item.cdname.toLowerCase().includes(searchText) ||
+        item.cdcreator.toLowerCase().includes(searchText) ||
+        item.cddetail.toLowerCase().includes(searchText)
+    );
+
+    displayMarkers(filteredData);
+});
+

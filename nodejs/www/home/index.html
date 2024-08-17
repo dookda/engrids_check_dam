@@ -64,7 +64,7 @@
                 </div>
                 <form id="checkDamForm" enctype="multipart/form-data">
                     <div class="modal-body">
-                        <input type="hidden" name="userid" id="userid" value="ss">
+                        <input type="hidden" name="userid" id="userid">
                         <input type="hidden" name="lat" id="lat">
                         <input type="hidden" name="lng" id="lng">
                         <label>ชื่อฝาย/สถานที่: </label>
@@ -74,6 +74,10 @@
                         <label>ผู้สร้าง/ผู้ดูแล: </label>
                         <div class="form-group">
                             <input type="text" name="cdcreator" id="cdcreator" class="form-control">
+                        </div>
+                        <label>วันที่สร้าง: </label>
+                        <div class="form-group">
+                            <input type="date" name="cddate" id="cddate" value="2024-07-22" class="form-control" />
                         </div>
                         <label>รายละเอียดเพิ่มเติม: </label>
                         <div class="form-group">
