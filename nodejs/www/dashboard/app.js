@@ -33,7 +33,7 @@ const overlayMaps = {};
 L.control.layers(baseLayers, overlayMaps).addTo(map);
 
 let checkdamData = [];
-fetch('/api/getcheckdam')
+fetch('/checkdam/api/getcheckdam')
     .then(response => response.json())
     .then(data => {
         if (data.success) {
@@ -70,7 +70,7 @@ const displayMarkers = (data) => {
 
             const cdimageElement = document.getElementById('modal-cdimage');
             if (item.cdimage) {
-                cdimageElement.src = `/${item.cdimage}`;
+                cdimageElement.src = `/checkdam/${item.cdimage}`;
                 cdimageElement.style.display = 'block'; // Show the image
             } else {
                 cdimageElement.style.display = 'none'; // Hide the image element if there's no image

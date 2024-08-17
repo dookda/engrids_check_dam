@@ -5,9 +5,9 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use(require('./service/api'));
-app.use('/uploads', express.static('uploads'));
-app.use(express.static('www'));
+app.use('/checkdam', require('./service/api'));
+app.use('/checkdam/uploads', express.static('uploads'));
+app.use('/checkdam', express.static('www'));
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

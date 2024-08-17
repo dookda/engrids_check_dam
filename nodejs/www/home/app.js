@@ -16,7 +16,7 @@ liff.init({
         document.getElementById('displayName').innerHTML = displayName;
         document.getElementById('userid').value = userId;
 
-        fetch('/api/user', {
+        fetch('/checkdam/api/user', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
         formData.append('lng', lng);
 
         try {
-            const response = await fetch('/api/submitform', {
+            const response = await fetch('/checkdam/api/submitform', {
                 method: 'POST',
                 body: formData
             });
