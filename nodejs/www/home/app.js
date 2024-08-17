@@ -13,7 +13,6 @@ liff.init({
         document.getElementById('login').style.display = 'none';
         document.getElementById('logout').style.display = 'block';
         document.getElementById('pictureUrl').src = pictureUrl;
-        // document.getElementById('displayName').innerHTML = displayName;
         document.getElementById('userid').value = userId;
 
         fetch('/checkdam/api/user', {
