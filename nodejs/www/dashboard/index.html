@@ -52,64 +52,7 @@
         <div class="card mt-1" id="map"></div>
     </div>
 
-    <div class="modal fade text-left" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel33">เพิ่มข้อมูล</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
-                </div>
-                <form id="checkDamForm" enctype="multipart/form-data">
-                    <div class="modal-body">
-                        <input type="hidden" name="userid" id="userid" value="ss">
-                        <input type="hidden" name="lat" id="lat">
-                        <input type="hidden" name="lng" id="lng">
-                        <label>ชื่อฝาย/สถานที่: </label>
-                        <div class="form-group">
-                            <input type="text" name="cdname" id="cdname" class="form-control">
-                        </div>
-                        <label>ผู้สร้าง/ผู้ดูแล: </label>
-                        <div class="form-group">
-                            <input type="text" name="cdcreator" id="cdcreator" class="form-control">
-                        </div>
-                        <label>รายละเอียดเพิ่มเติม: </label>
-                        <div class="form-group">
-                            <input type="text" name="cddetail" id="cddetail" class="form-control">
-                        </div>
-                        <label>รูปภาพ: </label>
-                        <div class="form-group">
-                            <input type="file" name="cdimage" accept="image/*" id="cdimage" class="form-control">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-                            <i class="bx bx-x d-block d-sm-none"></i>
-                            <span class="d-none d-sm-block">ยกเลิก</span>
-                        </button>
-                        <button type="submit" class="btn btn-primary">บันทึก</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 
-
-
-    <div class="toast-container position-fixed top-0 end-0 p-3">
-        <div id="myToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-                <strong class="me-auto"></strong>
-
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body">
-                บันทึกข้อมูลสำเร็จ
-            </div>
-        </div>
-    </div>
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

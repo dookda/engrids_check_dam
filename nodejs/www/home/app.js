@@ -3,16 +3,13 @@ const updateProfile = (params) => {
 }
 
 liff.init({
-    liffId: "2006072569-DYNRWJaX", // Use own liffId
-    withLoginOnExternalBrowser: true, // Enable automatic login process
+    liffId: "2006072569-DYNRWJaX",
+    withLoginOnExternalBrowser: true,
 }).then(() => {
-    // Start to use liff's api
     liff.getProfile().then(profile => {
         const userId = profile.userId;
         const displayName = profile.displayName;
-        // const statusMessage = profile.statusMessage;
         const pictureUrl = profile.pictureUrl;
-        // console.log(profile);
         document.getElementById('login').style.display = 'none';
         document.getElementById('logout').style.display = 'block';
         document.getElementById('pictureUrl').src = pictureUrl;
@@ -31,7 +28,7 @@ liff.init({
         }).then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    console.log(data.data);
+                    console.log('ok');
                 } else {
                     console.error('Error:', data.error);
                 }
@@ -41,14 +38,13 @@ liff.init({
     }).catch(
         err => console.error(err)
     );
-    console.log('LIFF init success');
 
 });
 
 document.getElementById('login').style.display = 'block';
 document.getElementById('logout').style.display = 'none';
 
-const map = L.map('map').setView([51.505, -0.09], 13);
+const map = L.map('map').setView([19.01056856174532, 99.0359886593147], 13);
 
 const gmap_road = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
     maxZoom: 20,
@@ -97,7 +93,6 @@ const onLocationError = (e) => {
 }
 
 async function openModal() {
-    // document.getElementById('gid').value = gid;
     var myModal = new bootstrap.Modal(document.getElementById('inputModal'), {
         keyboard: false
     });
@@ -115,6 +110,8 @@ function openToast() {
 
 const onLocationFound = (e) => {
     removeMarker();
+    document.getElementById('lat').value = e.latlng.lat;
+    document.getElementById('lng').value = e.latlng.lng;
     L.marker(e.latlng, { name: 'marker' })
         .addTo(map)
         .bindPopup(`ตำแหน่งของท่าน
@@ -126,6 +123,8 @@ const onLocationFound = (e) => {
 const onmapClick = (e) => {
     lc.stop();
     removeMarker();
+    document.getElementById('lat').value = e.latlng.lat;
+    document.getElementById('lng').value = e.latlng.lng;
     L.marker(e.latlng, { name: 'marker' })
         .addTo(map)
         .bindPopup(`ตำแหน่งที่เลือก
@@ -138,27 +137,36 @@ map.on('locationfound', onLocationFound);
 map.on('locationerror', onLocationError);
 map.on('click', onmapClick);
 
-document.getElementById('checkDamForm').addEventListener('submit', function (event) {
-    event.preventDefault();
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('checkDamForm');
 
-    var formData = new FormData(this);
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
 
-    fetch('/api/submitform', {
-        method: 'POST',
-        body: formData
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                openToast();
-                this.reset();
-            } else {
-                alert('There was an error submitting the form: ' + data.error);
+        const formData = new FormData(this);
+        const lat = document.getElementById('lat').value;
+        const lng = document.getElementById('lng').value;
+        formData.append('lat', lat);
+        formData.append('lng', lng);
+
+        try {
+            const response = await fetch('/api/submitform', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('There was an error submitting the form.');
-        });
-});
 
+            const result = await response.json();
+            // console.log('Success:', result);
+            var modal = bootstrap.Modal.getInstance(document.getElementById('inputModal'));
+            modal.hide();
+            form.reset();
+            openToast();
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+});
