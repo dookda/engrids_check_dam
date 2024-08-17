@@ -42,8 +42,8 @@
 
 // });
 
-document.getElementById('login').style.display = 'block';
-document.getElementById('logout').style.display = 'none';
+// document.getElementById('login').style.display = 'block';
+// document.getElementById('logout').style.display = 'none';
 
 const map = L.map('map').setView([19.01056856174532, 99.0359886593147], 13);
 
@@ -79,19 +79,35 @@ const overlayMaps = {};
 L.control.layers(baseLayers, overlayMaps).addTo(map);
 
 const showCheckdam = () => {
-    fetch('/api/getcheckdam').then(response => response.json())
+    fetch('/api/getcheckdam')
+        .then(response => response.json())
         .then(data => {
             if (data.success) {
                 data.data.forEach(item => {
                     const marker = L.marker([item.lat, item.lng]).addTo(map);
-                    marker.bindPopup(`<b>${item.cdname}</b><br>${item.cdcreator}<br>${item.cddetail}`);
+                    marker.on('click', () => {
+                        document.getElementById('modal-cdname').textContent = item.cdname;
+                        document.getElementById('modal-cdcreator').textContent = item.cdcreator;
+                        document.getElementById('modal-cddetail').textContent = item.cddetail;
+
+                        const cdimageElement = document.getElementById('modal-cdimage');
+                        if (item.cdimage) {
+                            cdimageElement.src = `/${item.cdimage}`;
+                            cdimageElement.style.display = 'block';
+                        } else {
+                            cdimageElement.style.display = 'none';
+                        }
+
+                        const checkdamModal = new bootstrap.Modal(document.getElementById('checkdamModal'));
+                        checkdamModal.show();
+                    });
                 });
             } else {
                 console.error('Error:', data.error);
             }
-        }).catch(
-            err => console.error(err)
-        );
-}
+        })
+        .catch(err => console.error(err));
+};
+
 
 showCheckdam();

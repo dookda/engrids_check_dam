@@ -23,27 +23,20 @@
 <body>
     <div class="container mt-2">
         <div class="row ">
-            <div class="col-12 col-md-6 order-md-1 order-last">
-                <h4>ปักหมุดฝาย</h4>
-                <p class="text-subtitle text-muted">บันทึกข้อมูลฝายที่ท่านสร้าง</p>
+            <div class="col-12 col-md-6 order-md-1 order-first">
+                <h4>ข้อมูลฝาย</h4>
+                <p class="text-subtitle text-muted">ตำแหน่งฝายที่สร้าง</p>
             </div>
-            <div class="col-12 col-md-6 order-md-2 order-first">
-                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                    <span id="logout" style="display:none;">
-                        <table style="width:auto;">
-                            <tr>
-                                <td class="block"><img alt="" id="pictureUrl"></td>
-                                <td class="block">
-                                    <span class="badge bg-light-secondary" id="displayName"></span><br>
-                                    <!-- <span class="badge bg-light-info" id="statusMessage"></span> -->
-                                </td>
-                            </tr>
-                        </table>
-                    </span>
-                    <span id="login">
-                        <a id="buttonDiv" data-onsuccess="onSignIn"></a>
-                    </span>
-                </nav>
+            <div class="col-12 col-md-6 order-md-2 order-last">
+                <div class="form-group has-icon-left">
+                    <label for="">ค้นหา</label>
+                    <div class="position-relative">
+                        <input type="text" class="form-control" id="first-name-icon">
+                        <div class="form-control-icon">
+                            <i class="bi bi-search"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -52,6 +45,25 @@
         <div class="card mt-1" id="map"></div>
     </div>
 
+    <div class="modal fade" id="checkdamModal" tabindex="-1" aria-labelledby="checkdamModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- <div class="modal-header">
+                    <h5 class="modal-title" id="checkdamModalLabel">Check Dam Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div> -->
+                <div class="modal-body">
+                    <p id="modal-cdname"></p>
+                    <p id="modal-cdcreator"></p>
+                    <p id="modal-cddetail"></p>
+                    <img id="modal-cdimage" src="" alt="Check Dam Image" style="width: 100%; display: none;">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </body>
 
