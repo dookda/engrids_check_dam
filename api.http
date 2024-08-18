@@ -1,1 +1,5 @@
 GET https://913f-2001-44c8-487e-d5d1-f159-7b57-1468-9212.ngrok-free.app/api/getcheckdam
+
+
+###
+GET https://maps.googleapis.com/maps/api/geocode/json?address=พิษณุโลก&key=AIzaSyDj_3PKrTeR6Xu0XEBMv2UwGWAiDKKa3U8

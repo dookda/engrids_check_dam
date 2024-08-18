@@ -21,12 +21,13 @@
 </head>
 
 <body>
-    <div class="container-fluid mt-2">
+    <div class="container-fluid mt-2 mb-2">
         <div class="row ">
             <div class="col-9 col-sm-6 order-md-1 order-first">
                 <span class="text-title">ปักหมุดฝาย</span><br>
                 <span class="text-subtitle text-muted">บันทึกข้อมูลฝาย</span>
             </div>
+
             <div class="col-3 col-sm-6 order-md-2 order-last">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-end float-lg-end">
                     <span id="logout" style="display:none;">
@@ -46,6 +47,17 @@
     </div>
 
     <div class="container-fluid">
+
+        <div class="col-12 mb-1">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control" id="search" placeholder="ใส่ชื่อสถานที่ที่ต้องการค้นหา"
+                    aria-describedby="button-addon2">
+                <button type="button" class="btn btn-primary" id="clearSearch" id="button-addon2">ยกเลิก</button>
+                <div id="searchDropdown" class="dropdown-menu" style="display: none; width: 100%;"></div>
+            </div>
+        </div>
+
         <div class="card mt-1" id="map"></div>
     </div>
 

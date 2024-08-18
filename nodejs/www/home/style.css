@@ -9,7 +9,7 @@ body {
 }
 
 #map {
-    height: 83vh;
+    height: 80vh;
     width: 100%;
 }
 
@@ -25,4 +25,29 @@ body {
     font-weight: 700;
     line-height: 0.2;
     color: #25396f;
+}
+
+.dropdown-menu {
+    opacity: 0.9;
+    z-index: 2000;
+    text-wrap: normal;
+}
+
+#searchDropdown {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#searchDropdown .dropdown-item {
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    padding: 10px;
+    cursor: pointer;
+}
+
+#searchDropdown .dropdown-item:hover {
+    background-color: #f0f0f0;
+    color: #435ebe;
 }

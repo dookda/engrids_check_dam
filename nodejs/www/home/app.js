@@ -169,4 +169,62 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+document.getElementById('search').addEventListener('input', function () {
+    const searchText = this.value.trim().toLowerCase();
+    const searchDropdown = document.getElementById('searchDropdown');
+
+    if (searchText) {
+        fetch(`https://nominatim.openstreetmap.org/search.php?q=${encodeURIComponent(searchText)}&format=json`)
+            .then(response => response.json())
+            .then(data => {
+                searchDropdown.innerHTML = '';
+
+                if (data.length > 0) {
+                    data.forEach(result => {
+                        const a = document.createElement('a');
+                        a.classList.add('dropdown-item');
+                        a.href = "#";
+                        a.innerText = result.display_name;
+                        a.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            const latlng = L.latLng(result.lat, result.lon);
+                            map.setView(latlng, 14);
+                            searchDropdown.style.display = 'none';
+
+                            removeMarker();
+                            document.getElementById('lat').value = latlng.lat;
+                            document.getElementById('lng').value = latlng.lng;
+                            L.marker(latlng, { name: 'marker' })
+                                .addTo(map)
+                                .bindPopup(`ตำแหน่งที่ค้นหา
+                                            <br>พิกัด: ${(latlng.lat).toFixed(4)}, ${(latlng.lng).toFixed(4)}
+                                            <br><button class="btn btn-info" onclick="openModal()">เพิ่มข้อมูลให้ตำแหน่งนี้</button>`)
+                                .openPopup();;
+                        });
+                        searchDropdown.appendChild(a);
+                    });
+                    searchDropdown.style.display = 'block';
+                } else {
+                    searchDropdown.innerHTML = '<a class="dropdown-item">ไม่พบข้อมูล</a>';
+                    searchDropdown.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data from API:', error);
+            });
+    } else {
+        searchDropdown.innerHTML = '';
+        searchDropdown.style.display = 'none';
+    }
+});
+
+document.getElementById('clearSearch').addEventListener('click', function () {
+    document.getElementById('search').value = ''; // Clear the input field
+    const searchDropdown = document.getElementById('searchDropdown');
+    searchDropdown.innerHTML = ''; // Clear the search results
+    searchDropdown.style.display = 'none'; // Hide the dropdown
+});
+
+
+
 document.getElementById('cddate').valueAsDate = new Date();
