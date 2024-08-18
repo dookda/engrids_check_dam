@@ -158,7 +158,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             const result = await response.json();
-            // console.log('Success:', result);
             var modal = bootstrap.Modal.getInstance(document.getElementById('inputModal'));
             modal.hide();
             form.reset();
@@ -191,6 +190,7 @@ document.getElementById('search').addEventListener('input', function () {
                             map.setView(latlng, 14);
                             searchDropdown.style.display = 'none';
 
+                            lc.stop();
                             removeMarker();
                             document.getElementById('lat').value = latlng.lat;
                             document.getElementById('lng').value = latlng.lng;
@@ -224,7 +224,5 @@ document.getElementById('clearSearch').addEventListener('click', function () {
     searchDropdown.innerHTML = ''; // Clear the search results
     searchDropdown.style.display = 'none'; // Hide the dropdown
 });
-
-
 
 document.getElementById('cddate').valueAsDate = new Date();
