@@ -219,10 +219,10 @@ document.getElementById('search').addEventListener('input', function () {
 });
 
 document.getElementById('clearSearch').addEventListener('click', function () {
-    document.getElementById('search').value = ''; // Clear the input field
+    document.getElementById('search').value = '';
     const searchDropdown = document.getElementById('searchDropdown');
-    searchDropdown.innerHTML = ''; // Clear the search results
-    searchDropdown.style.display = 'none'; // Hide the dropdown
+    searchDropdown.innerHTML = '';
+    searchDropdown.style.display = 'none';
 });
 
 document.getElementById('cddate').valueAsDate = new Date();

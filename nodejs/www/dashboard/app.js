@@ -205,3 +205,14 @@ document.getElementById('search').addEventListener('input', function () {
         console.error('Error processing search input:', error);
     }
 });
+
+document.getElementById('clearSearch').addEventListener('click', function () {
+    try {
+        document.getElementById('search').value = '';
+        displayMarkers(checkdamData);
+        displayChart(checkdamData);
+        updateCards(checkdamData);
+    } catch (error) {
+        console.error('Error resetting search:', error);
+    }
+});
