@@ -21,10 +21,11 @@
 </head>
 
 <body>
-    <div class="container mt-2">
+    <div class="container-fluid mt-2">
         <div class="row ">
             <div class="col-12 col-md-6 order-md-1 order-first">
-                <h4>ตำแหน่งฝายที่สร้าง</h4>
+                <span class="text-title ">สถิติ</span><br>
+                <span class="text-muted">จำนวนฝายเฉลิมพระเกียรติ</span>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-last">
                 <div class="form-group has-icon-left">
@@ -38,8 +39,38 @@
             </div>
         </div>
     </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body ">
+                        <div class="d-flex align-items-center">
+                            <div class="ms-3 name">
+                                <h5 class="font-bold">ฝายทั้งหมด</h5>
+                                <h6 class="text-muted mb-0" id="totalcd"></h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <div class="card-body ">
+                        <div class="d-flex align-items-center">
+                            <div class="ms-3 name">
+                                <h5 class="font-bold">ฝายล่าสุด</h5>
+                                <h6 class="text-muted mb-0" id="lastcd"></h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <div class="container">
+
+        <div class="card mt-1" id="chart_sumbymonth"></div>
+    </div>
+    <div class="container-fluid">
         <div class="card mt-1" id="map"></div>
     </div>
 
@@ -53,6 +84,7 @@
                 <div class="modal-body">
                     <p id="modal-cdname"></p>
                     <p id="modal-cdcreator"></p>
+                    <p id="modal-cdtype"></p>
                     <p id="modal-cddetail"></p>
                     <p id="modal-cddate"></p>
                     <p id="modal-cdcoords"></p>
@@ -76,6 +108,7 @@
 <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.81.1/dist/L.Control.Locate.min.js"
     charset="utf-8"></script>
 <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/versions/2.22.3/sdk.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script src="./app.js"></script>
 
 </html>

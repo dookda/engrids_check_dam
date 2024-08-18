@@ -21,14 +21,14 @@
 </head>
 
 <body>
-    <div class="container mt-2">
+    <div class="container-fluid mt-2">
         <div class="row ">
             <div class="col-9 col-sm-6 order-md-1 order-first">
-                <h4>ปักหมุดฝาย</h4>
-                <p class="text-subtitle text-muted">บันทึกข้อมูลฝายที่ท่านสร้าง</p>
+                <span class="text-title">ปักหมุดฝาย</span><br>
+                <span class="text-subtitle text-muted">บันทึกข้อมูลฝาย</span>
             </div>
             <div class="col-3 col-sm-6 order-md-2 order-last">
-                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-end float-lg-end">
                     <span id="logout" style="display:none;">
                         <table style="width:auto;">
                             <tr>
@@ -45,7 +45,7 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="container-fluid">
         <div class="card mt-1" id="map"></div>
     </div>
 
@@ -53,24 +53,32 @@
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel33">เพิ่มข้อมูล</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
-                </div>
                 <form id="checkDamForm" enctype="multipart/form-data">
                     <div class="modal-body">
                         <input type="hidden" name="userid" id="userid">
                         <input type="hidden" name="lat" id="lat">
                         <input type="hidden" name="lng" id="lng">
-                        <label>ชื่อฝาย/สถานที่: </label>
+                        <label>ชื่อฝาย: </label>
                         <div class="form-group">
                             <input type="text" name="cdname" id="cdname" class="form-control">
                         </div>
                         <label>ผู้สร้าง/ผู้ดูแล: </label>
                         <div class="form-group">
                             <input type="text" name="cdcreator" id="cdcreator" class="form-control">
+                        </div>
+                        <label>รูปแบบของฝาย: </label>
+                        <div class="form-group">
+                            <select name="cdtype" id="cdtype" class="form-select">
+                                <option value="ฝายไม้">ฝายไม้</option>
+                                <option value="ฝายไม้แกนดิน">ฝายไม้แกนดิน</option>
+                                <option value="ฝายคอกหมู">ฝายคอกหมู</option>
+                                <option value="ฝายหิน">ฝายหิน</option>
+                                <option value="ฝายหินก่อ">ฝายหินก่อ</option>
+                                <option value="ฝายหินเรียงแกนดิน">ฝายหินเรียงแกนดิน</option>
+                                <option value="ฝายหินเรียงแกนคอนกรีตเสริมเหล็ก">ฝายหินเรียงแกนคอนกรีตเสริมเหล็ก</option>
+                                <option value="ฝายคอนกรีตเสริมเหล็ก">ฝายคอนกรีตเสริมเหล็ก</option>
+                                <option value="ฝายประยุกต์">ฝายประยุกต์</option>
+                            </select>
                         </div>
                         <label>วันที่สร้าง: </label>
                         <div class="form-group">

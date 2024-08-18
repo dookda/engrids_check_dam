@@ -37,7 +37,6 @@ liff.init({
     }).catch(
         err => console.error(err)
     );
-
 });
 
 document.getElementById('login').style.display = 'block';
@@ -91,14 +90,14 @@ const onLocationError = (e) => {
     alert(e.message);
 }
 
-async function openModal() {
+const openModal = async () => {
     var myModal = new bootstrap.Modal(document.getElementById('inputModal'), {
         keyboard: false
     });
     myModal.show();
 }
 
-function openToast() {
+const openToast = () => {
     var toast = new bootstrap.Toast(document.getElementById('myToast'));
     toast.show();
 
@@ -169,3 +168,5 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+document.getElementById('cddate').valueAsDate = new Date();
