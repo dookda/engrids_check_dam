@@ -5,7 +5,7 @@
 -- Dumped from database version 16.0 (Debian 16.0-1.pgdg110+1)
 -- Dumped by pg_dump version 16.3
 
--- Started on 2024-08-17 17:38:54 +07
+-- Started on 2024-08-18 12:05:37 +07
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -63,7 +63,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 224 (class 1259 OID 17579)
+-- TOC entry 224 (class 1259 OID 17620)
 -- Name: checkdam; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -73,6 +73,7 @@ CREATE TABLE public.checkdam (
     cdcreator character varying(255) NOT NULL,
     cddetail text,
     cddate date,
+    cdtype text,
     lat double precision,
     lng double precision,
     geom public.geometry(Point,4326),
@@ -85,7 +86,7 @@ CREATE TABLE public.checkdam (
 ALTER TABLE public.checkdam OWNER TO postgres;
 
 --
--- TOC entry 223 (class 1259 OID 17578)
+-- TOC entry 223 (class 1259 OID 17619)
 -- Name: checkdam_gid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -110,7 +111,7 @@ ALTER SEQUENCE public.checkdam_gid_seq OWNED BY public.checkdam.gid;
 
 
 --
--- TOC entry 222 (class 1259 OID 17498)
+-- TOC entry 222 (class 1259 OID 17609)
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -126,7 +127,7 @@ CREATE TABLE public.users (
 ALTER TABLE public.users OWNER TO postgres;
 
 --
--- TOC entry 221 (class 1259 OID 17497)
+-- TOC entry 221 (class 1259 OID 17608)
 -- Name: users_gid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -151,7 +152,7 @@ ALTER SEQUENCE public.users_gid_seq OWNED BY public.users.gid;
 
 
 --
--- TOC entry 4113 (class 2604 OID 17582)
+-- TOC entry 4113 (class 2604 OID 17623)
 -- Name: checkdam gid; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -159,7 +160,7 @@ ALTER TABLE ONLY public.checkdam ALTER COLUMN gid SET DEFAULT nextval('public.ch
 
 
 --
--- TOC entry 4110 (class 2604 OID 17501)
+-- TOC entry 4110 (class 2604 OID 17612)
 -- Name: users gid; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -167,14 +168,17 @@ ALTER TABLE ONLY public.users ALTER COLUMN gid SET DEFAULT nextval('public.users
 
 
 --
--- TOC entry 4274 (class 0 OID 17579)
+-- TOC entry 4274 (class 0 OID 17620)
 -- Dependencies: 224
 -- Data for Name: checkdam; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.checkdam (gid, cdname, cdcreator, cddetail, cddate, lat, lng, geom, cdimage, created_at, userid) VALUES (1, 'ฝาย1', 'sakda', 'ทดสอบ', '2018-07-22', 18.938696515845233, 99.09226477146149, '0101000020E6100000000080AAE7C55840A76C346A4EF03240', 'uploads/1723890140358.jpeg', '2024-08-17 10:22:20.97676', 'Ue340022c2f6d6c989a3c4120991d90d1') ON CONFLICT DO NOTHING;
-INSERT INTO public.checkdam (gid, cdname, cdcreator, cddetail, cddate, lat, lng, geom, cdimage, created_at, userid) VALUES (2, 'ฝาย2', 'sakda', 'test', '2024-08-17', 18.931797368393763, 99.08189535140993, '0101000020E6100000010000C63DC5584005C0B7458AEE3240', 'uploads/1723890246927.png', '2024-08-17 10:24:07.000036', 'Ue340022c2f6d6c989a3c4120991d90d1') ON CONFLICT DO NOTHING;
-INSERT INTO public.checkdam (gid, cdname, cdcreator, cddetail, cddate, lat, lng, geom, cdimage, created_at, userid) VALUES (3, 'ฝาย3', 'sakda', 'ฝาย3', '2024-07-22', 18.985600920771365, 99.09024238586427, '0101000020E610000001000088C6C55840D99E895750FC3240', 'uploads/1723890283617.jpeg', '2024-08-17 10:24:44.45108', 'Ue340022c2f6d6c989a3c4120991d90d1') ON CONFLICT DO NOTHING;
+INSERT INTO public.checkdam (gid, cdname, cdcreator, cddetail, cddate, cdtype, lat, lng, geom, cdimage, created_at, userid) VALUES (1, 'test', 'tt', 'tt', '2024-08-18', 'ฝายไม้', 19.0013241190163, 99.07848358154297, '0101000020E6100000000000E005C55840FBDE07C756003340', 'uploads/1723948789178.jpeg', '2024-08-18 02:39:49.699362', 'Ue340022c2f6d6c989a3c4120991d90d1') ON CONFLICT DO NOTHING;
+INSERT INTO public.checkdam (gid, cdname, cdcreator, cddetail, cddate, cdtype, lat, lng, geom, cdimage, created_at, userid) VALUES (2, 'test', 'tt', 'yy', '2024-06-12', 'ฝายคอกหมู', 19.00333483583373, 99.05582427978516, '0101000020E6100000000000A092C35840E9D7428DDA003340', 'uploads/1723951443960.jpeg', '2024-08-18 03:24:05.186543', 'Ue340022c2f6d6c989a3c4120991d90d1') ON CONFLICT DO NOTHING;
+INSERT INTO public.checkdam (gid, cdname, cdcreator, cddetail, cddate, cdtype, lat, lng, geom, cdimage, created_at, userid) VALUES (3, 'ttt', 'yy', 'yy', '2024-06-11', 'ฝายคอกหมู', 18.990185747021137, 99.14354324340822, '0101000020E6100000010000D02FC95840CE6B28D07CFD3240', NULL, '2024-08-18 03:24:21.367613', 'Ue340022c2f6d6c989a3c4120991d90d1') ON CONFLICT DO NOTHING;
+INSERT INTO public.checkdam (gid, cdname, cdcreator, cddetail, cddate, cdtype, lat, lng, geom, cdimage, created_at, userid) VALUES (4, 'yy', 'yy', '', '2024-06-19', 'ฝายหิน', 18.952843168845064, 99.16311264038087, '0101000020E61000000100007070CA58401468A887EDF33240', NULL, '2024-08-18 03:24:40.458056', 'Ue340022c2f6d6c989a3c4120991d90d1') ON CONFLICT DO NOTHING;
+INSERT INTO public.checkdam (gid, cdname, cdcreator, cddetail, cddate, cdtype, lat, lng, geom, cdimage, created_at, userid) VALUES (5, 'y', 'y', 'y', '2024-07-22', 'ฝายไม้', 18.997977925058418, 99.09959793090822, '0101000020E6100000010000D05FC658407F41367B7BFF3240', 'uploads/1723951522407.jpeg', '2024-08-18 03:25:22.969097', 'Ue340022c2f6d6c989a3c4120991d90d1') ON CONFLICT DO NOTHING;
+INSERT INTO public.checkdam (gid, cdname, cdcreator, cddetail, cddate, cdtype, lat, lng, geom, cdimage, created_at, userid) VALUES (6, 'aa', 'aa', '', '2024-04-16', 'ฝายไม้แกนดิน', 19.069505789658155, 99.01702880859375, '0101000020E61000000000000017C15840E576A521CB113340', 'uploads/1723954820853.jpeg', '2024-08-18 04:20:22.093486', 'Ue340022c2f6d6c989a3c4120991d90d1') ON CONFLICT DO NOTHING;
 
 
 --
@@ -186,12 +190,12 @@ INSERT INTO public.checkdam (gid, cdname, cdcreator, cddetail, cddate, lat, lng,
 
 
 --
--- TOC entry 4272 (class 0 OID 17498)
+-- TOC entry 4272 (class 0 OID 17609)
 -- Dependencies: 222
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.users (gid, userid, username, created_at, updated_at) VALUES (1, 'Ue340022c2f6d6c989a3c4120991d90d1', 'sakda.homhuan', '2024-08-16 09:17:43.045405', '2024-08-17 10:23:06.05675') ON CONFLICT DO NOTHING;
+INSERT INTO public.users (gid, userid, username, created_at, updated_at) VALUES (1, 'Ue340022c2f6d6c989a3c4120991d90d1', 'sakda.homhuan', '2024-08-18 02:37:20.238971', '2024-08-18 04:35:13.457482') ON CONFLICT DO NOTHING;
 
 
 --
@@ -200,7 +204,7 @@ INSERT INTO public.users (gid, userid, username, created_at, updated_at) VALUES 
 -- Name: checkdam_gid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.checkdam_gid_seq', 3, true);
+SELECT pg_catalog.setval('public.checkdam_gid_seq', 6, true);
 
 
 --
@@ -209,11 +213,11 @@ SELECT pg_catalog.setval('public.checkdam_gid_seq', 3, true);
 -- Name: users_gid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_gid_seq', 32, true);
+SELECT pg_catalog.setval('public.users_gid_seq', 5, true);
 
 
 --
--- TOC entry 4121 (class 2606 OID 17587)
+-- TOC entry 4121 (class 2606 OID 17628)
 -- Name: checkdam checkdam_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -222,7 +226,7 @@ ALTER TABLE ONLY public.checkdam
 
 
 --
--- TOC entry 4119 (class 2606 OID 17507)
+-- TOC entry 4119 (class 2606 OID 17618)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -231,7 +235,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 4122 (class 2606 OID 17588)
+-- TOC entry 4122 (class 2606 OID 17629)
 -- Name: checkdam checkdam_userid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -239,7 +243,7 @@ ALTER TABLE ONLY public.checkdam
     ADD CONSTRAINT checkdam_userid_fkey FOREIGN KEY (userid) REFERENCES public.users(userid) ON DELETE SET NULL;
 
 
--- Completed on 2024-08-17 17:38:55 +07
+-- Completed on 2024-08-18 12:05:37 +07
 
 --
 -- PostgreSQL database dump complete
