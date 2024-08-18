@@ -108,6 +108,10 @@ const displayChart = (data) => {
             }],
             xaxis: {
                 categories: categories,
+                labels: {
+                    rotate: -90,
+                    rotateAlways: true
+                }
             },
             yaxis: {
                 title: {
