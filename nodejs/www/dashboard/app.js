@@ -36,14 +36,65 @@ let checkdamData = [];
 fetch('/checkdam/api/getcheckdam')
     .then(response => response.json())
     .then(data => {
-        if (data.success) {
-            checkdamData = data.data;
-            displayMarkers(checkdamData);
-            displayChart(checkdamData);
-            updateCards(checkdamData);
-        } else {
-            console.error('Error:', data.error);
-        }
+        console.log(data);
+
+        let table = $('#checkdamTable').DataTable({
+            data: data.data,
+            columns: [
+                { data: 'gid' },
+                { data: 'cdname' },
+                { data: 'cdcreator' },
+                { data: 'cddetail' },
+                { data: 'cdtype' },
+                { data: 'cddate' },
+                {
+                    data: '',
+                    render: function (data, type, row, meta) {
+                        return `${row.lat}, ${row.lng}`;
+                    }
+                },
+                {
+                    data: '',
+                    render: function (data, type, row, meta) {
+                        const img = row.cdimage ? row.cdimage : 'dashboard/placeholder-image.png';
+                        return `<img src="/checkdam/${img}" alt="ภาพฝาย" style="width: 100px; height: 100px;">`;
+                    }
+                },
+            ],
+            scrollX: true, destroy: true,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Survey Data',
+                    text: 'ดาวโหลด Excel',
+                    className: 'custom-button'
+                }
+            ]
+        });
+
+        $('#search').on('keyup', function () {
+            let keyword = $(this).val();
+            table.search(keyword).draw();
+            // console.log('Current search keyword:', keyword);
+        });
+
+        $('#clearSearch').on('click', function () {
+            $('#search').val('');
+            table.search('').draw();
+        });
+
+        let filteredData = table.rows({ filter: 'applied' }).data().toArray();
+        displayMarkers(filteredData);
+        displayChart(filteredData);
+        updateCards(filteredData);
+
+        table.on('search.dt', function () {
+            let filteredData = table.rows({ search: 'applied' }).data().toArray();
+            displayMarkers(filteredData);
+            displayChart(filteredData);
+            updateCards(filteredData);
+        });
     })
     .catch(err => console.error(err));
 
