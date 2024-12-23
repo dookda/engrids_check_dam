@@ -36,7 +36,7 @@ let checkdamData = [];
 fetch('/checkdam/api/getcheckdam')
     .then(response => response.json())
     .then(data => {
-        console.log(data);
+        // console.log(data);
 
         let table = $('#checkdamTable').DataTable({
             data: data.data,
