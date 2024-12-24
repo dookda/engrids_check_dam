@@ -120,5 +120,23 @@ app.delete('/api/deletecheckdam/:id', async (req, res) => {
     }
 });
 
+// update checkdam by id
+app.put('/api/updatecheckdam/:id', async (req, res) => {
+    const id = req.params.id;
+    const { cdname, cdcreator, cddetail, cdtype, lat, lng, cddate, cdimage } = req.body;
+
+    try {
+        const result = await pool.query(
+            'UPDATE checkdam SET cdname = $1, cdcreator = $2, cddetail = $3, cdtype = $4, lat = $5, lng = $6, cddate = $7, cdimage = $8 WHERE gid = $9 RETURNING *',
+            [cdname, cdcreator, cddetail, cdtype, lat, lng, cddate, cdimage, id]
+        );
+
+        res.status(200).json({ success: true, data: result.rows[0] });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
 // export module
 module.exports = app;

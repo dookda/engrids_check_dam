@@ -2,22 +2,22 @@
 const map = L.map('map').setView([19.01056856174532, 99.0359886593147], 13);
 
 const gmap_road = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-    maxZoom: 20,
+    maxZoom: 22,
     subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
 });
 
 const gmap_sat = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-    maxZoom: 20,
+    maxZoom: 22,
     subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
 });
 
 const gmap_terrain = L.tileLayer('https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
-    maxZoom: 20,
+    maxZoom: 22,
     subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
 });
 
 const gmap_hybrid = L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
-    maxZoom: 20,
+    maxZoom: 22,
     subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
 });
 
@@ -46,7 +46,8 @@ fetch('/checkdam/api/getcheckdam')
                     render: function (data, type, row, meta) {
                         // console.log('Row data:', row);
 
-                        return `<button class="btn btn-danger" onclick="deleteCheckdam(${row.gid})">ลบ</button>`;
+                        return `<button class="btn btn-danger" onclick="deleteCheckdam(${row.gid})">ลบ</button>
+                                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateModal" onclick="setUpdateForm(${row.gid})">แก้ไข</button>`;
                     }
                 },
                 { data: 'cdname' },
@@ -277,6 +278,45 @@ const deleteCheckdam = async (id) => {
         }
     } catch (error) {
         console.error('Error deleting checkdam:', error);
+    }
+};
+
+// update checkdam function
+const updateCheckdam = async (id) => {
+    try {
+        const cdname = document.getElementById('cdname').value;
+        const cdcreator = document.getElementById('cdcreator').value;
+        const cddetail = document.getElementById('cddetail').value;
+        const cdtype = document.getElementById('cdtype').value;
+        const lat = document.getElementById('lat').value;
+        const lng = document.getElementById('lng').value;
+        const cddate = document.getElementById('cddate').value;
+        const cdimage = document.getElementById('cdimage').files[0];
+
+        const formData = new FormData();
+        formData.append('cdname', cdname);
+        formData.append('cdcreator', cdcreator);
+        formData.append('cddetail', cddetail);
+        formData.append('cdtype', cdtype);
+        formData.append('lat', lat);
+        formData.append('lng', lng);
+        formData.append('cddate', cddate);
+        formData.append('cdimage', cdimage);
+
+        const response = await fetch(`/checkdam/api/updatecheckdam/${id}`, {
+            method: 'PUT',
+            body: formData
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            console.log('Checkdam updated:', data.data);
+            location.reload();
+        } else {
+            console.error('Error updating checkdam:', data.error);
+        }
+    } catch (error) {
+        console.error('Error updating checkdam:', error);
     }
 };
 
