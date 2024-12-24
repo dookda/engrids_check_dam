@@ -41,7 +41,14 @@ fetch('/checkdam/api/getcheckdam')
         let table = $('#checkdamTable').DataTable({
             data: data.data,
             columns: [
-                { data: 'gid' },
+                {
+                    data: 'gid',
+                    render: function (data, type, row, meta) {
+                        // console.log('Row data:', row);
+
+                        return `<button class="btn btn-danger" onclick="deleteCheckdam(${row.gid})">ลบ</button>`;
+                    }
+                },
                 { data: 'cdname' },
                 { data: 'cdcreator' },
                 { data: 'cddetail' },
@@ -256,6 +263,23 @@ document.getElementById('search').addEventListener('input', function () {
         console.error('Error processing search input:', error);
     }
 });
+
+// delete checkdam function
+const deleteCheckdam = async (id) => {
+    try {
+        const response = await fetch(`/checkdam/api/deletecheckdam/${id}`, { method: 'DELETE' });
+        const data = await response.json();
+        if (data.success) {
+            console.log('Checkdam deleted:', data.data);
+            location.reload();
+        } else {
+            console.error('Error deleting checkdam:', data.error);
+        }
+    } catch (error) {
+        console.error('Error deleting checkdam:', error);
+    }
+};
+
 
 document.getElementById('clearSearch').addEventListener('click', function () {
     try {

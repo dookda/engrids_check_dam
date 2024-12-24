@@ -107,5 +107,18 @@ app.get('/api/sumbymonth', async (req, res) => {
     }
 });
 
+// delete checkdam by id
+app.delete('/api/deletecheckdam/:id', async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        const result = await pool.query('DELETE FROM checkdam WHERE gid = $1 RETURNING *', [id]);
+        res.status(200).json({ success: true, data: result.rows[0] });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
 // export module
 module.exports = app;
