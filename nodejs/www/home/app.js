@@ -65,10 +65,10 @@ const gmap_hybrid = L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z=
 });
 
 const baseLayers = {
-    "Google Road": gmap_road,
-    "Google Satellite": gmap_sat,
-    "Google Terrain": gmap_terrain,
-    "Google Hybrid": gmap_hybrid.addTo(map)
+    "แผนที่ถนน": gmap_road,
+    "แผนที่ภาพดาวเทียม": gmap_sat,
+    "แผนที่ภาพดาวเทียมผสม": gmap_hybrid.addTo(map),
+    "แผนที่ภูมิประเทศ": gmap_terrain
 };
 
 const overlayMaps = {};
@@ -106,11 +106,18 @@ const openToast = () => {
     }, 3000);
 }
 
+const redIcon = L.icon({
+    iconUrl: './../assets/pin_red.png',
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32]
+});
+
 const onLocationFound = (e) => {
     removeMarker();
     document.getElementById('lat').value = e.latlng.lat;
     document.getElementById('lng').value = e.latlng.lng;
-    L.marker(e.latlng, { name: 'marker' })
+    L.marker(e.latlng, { name: 'marker', icon: redIcon })
         .addTo(map)
         .bindPopup(`ตำแหน่งของท่าน
             <br>พิกัด: ${(e.latlng.lat).toFixed(4)}, ${(e.latlng.lng).toFixed(4)}
@@ -118,22 +125,39 @@ const onLocationFound = (e) => {
         .openPopup();
 }
 
-const onmapClick = (e) => {
+const onMapClick = (e) => {
     lc.stop();
     removeMarker();
     document.getElementById('lat').value = e.latlng.lat;
     document.getElementById('lng').value = e.latlng.lng;
-    L.marker(e.latlng, { name: 'marker' })
+    L.marker(e.latlng, { name: 'marker', icon: redIcon })
         .addTo(map)
         .bindPopup(`ตำแหน่งที่เลือก
             <br>พิกัด: ${(e.latlng.lat).toFixed(4)}, ${(e.latlng.lng).toFixed(4)}
             <br><button class="btn btn-info" onclick="openModal()">เพิ่มข้อมูลให้ตำแหน่งนี้</button>`)
-        .openPopup();;
+        .openPopup();
+
+    map.setView([e.latlng.lat, e.latlng.lng]);
+}
+
+const updateMarker = () => {
+    lc.stop();
+    const lat = document.getElementById('lat').value;
+    const lng = document.getElementById('lng').value;
+    removeMarker();
+    L.marker([lat, lng], { name: 'marker', icon: redIcon })
+        .addTo(map)
+        .bindPopup(`ตำแหน่งที่เลือก
+            <br>พิกัด: ${lat}, ${lng}
+            <br><button class="btn btn-info" onclick="openModal()">เพิ่มข้อมูลให้ตำแหน่งนี้</button>`)
+        .openPopup();
+
+    map.setView([lat, lng], 16);
 }
 
 map.on('locationfound', onLocationFound);
 map.on('locationerror', onLocationError);
-map.on('click', onmapClick);
+map.on('click', onMapClick);
 
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('checkDamForm');
@@ -168,61 +192,4 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-document.getElementById('search').addEventListener('input', function () {
-    const searchText = this.value.trim().toLowerCase();
-    const searchDropdown = document.getElementById('searchDropdown');
-
-    if (searchText) {
-        fetch(`https://nominatim.openstreetmap.org/search.php?q=${encodeURIComponent(searchText)}&format=json`)
-            .then(response => response.json())
-            .then(data => {
-                searchDropdown.innerHTML = '';
-
-                if (data.length > 0) {
-                    data.forEach(result => {
-                        const a = document.createElement('a');
-                        a.classList.add('dropdown-item');
-                        a.href = "#";
-                        a.innerText = result.display_name;
-                        a.addEventListener('click', function (e) {
-                            e.preventDefault();
-                            const latlng = L.latLng(result.lat, result.lon);
-                            map.setView(latlng, 14);
-                            searchDropdown.style.display = 'none';
-
-                            lc.stop();
-                            removeMarker();
-                            document.getElementById('lat').value = latlng.lat;
-                            document.getElementById('lng').value = latlng.lng;
-                            L.marker(latlng, { name: 'marker' })
-                                .addTo(map)
-                                .bindPopup(`ตำแหน่งที่ค้นหา
-                                            <br>พิกัด: ${(latlng.lat).toFixed(4)}, ${(latlng.lng).toFixed(4)}
-                                            <br><button class="btn btn-info" onclick="openModal()">เพิ่มข้อมูลให้ตำแหน่งนี้</button>`)
-                                .openPopup();;
-                        });
-                        searchDropdown.appendChild(a);
-                    });
-                    searchDropdown.style.display = 'block';
-                } else {
-                    searchDropdown.innerHTML = '<a class="dropdown-item">ไม่พบข้อมูล</a>';
-                    searchDropdown.style.display = 'block';
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching data from API:', error);
-            });
-    } else {
-        searchDropdown.innerHTML = '';
-        searchDropdown.style.display = 'none';
-    }
-});
-
-document.getElementById('clearSearch').addEventListener('click', function () {
-    document.getElementById('search').value = '';
-    const searchDropdown = document.getElementById('searchDropdown');
-    searchDropdown.innerHTML = '';
-    searchDropdown.style.display = 'none';
-});
-
-document.getElementById('cddate').valueAsDate = new Date();
+// document.getElementById('cddate').valueAsDate = new Date();

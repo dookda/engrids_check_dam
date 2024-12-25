@@ -49,12 +49,18 @@
     <div class="container-fluid">
 
         <div class="col-12 mb-4">
-            <div class="input-group">
-                <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
-                <input type="text" class="form-control" id="search" placeholder="ใส่ชื่อสถานที่ที่ต้องการค้นหา"
-                    aria-describedby="button-addon2">
-                <button type="button" class="btn btn-primary" id="clearSearch">ยกเลิก</button>
-                <div id="searchDropdown" class="dropdown-menu" style="display: none; width: 100%;"></div>
+            <div>
+                <label for="">กรอกพิกัดของท่านหรือแตะลงบนแผนที่เพื่อปักหมุด</label>
+                <div class="form-group">
+                    <label for="">ละติจูด</label>
+                    <input type="text" class="form-control" step="0.1" id="lat" placeholder="ละติจูด"
+                        onkeyup="updateMarker()">
+                </div>
+                <div class="form-group">
+                    <label for="">ลองจิจูด</label>
+                    <input type="text" class="form-control" step="0.1" id="lng" placeholder="ลองจิจูด"
+                        onkeyup="updateMarker()">
+                </div>
             </div>
         </div>
 
@@ -68,42 +74,44 @@
                 <form id="checkDamForm" enctype="multipart/form-data">
                     <div class="modal-body">
                         <input type="hidden" name="userid" id="userid">
-                        <input type="hidden" name="lat" id="lat">
-                        <input type="hidden" name="lng" id="lng">
-                        <label>ชื่อฝาย: </label>
-                        <div class="form-group">
-                            <input type="text" name="cdname" id="cdname" class="form-control">
+                        <div class="form-group"><label>ชื่อฝาย: </label>
+                            <div class="form-group">
+                                <input type="text" name="cdname" id="cdname" class="form-control">
+                            </div>
                         </div>
-                        <label>ผู้สร้าง/ผู้ดูแล: </label>
-                        <div class="form-group">
-                            <input type="text" name="cdcreator" id="cdcreator" class="form-control">
+                        <div class="form-group"> <label>ผู้สร้าง/ผู้ดูแล: </label>
+                            <div class="form-group">
+                                <input type="text" name="cdcreator" id="cdcreator" class="form-control">
+                            </div>
                         </div>
-                        <label>รูปแบบของฝาย: </label>
-                        <div class="form-group">
-                            <select name="cdtype" id="cdtype" class="form-select">
-                                <option value="ฝายไม้">ฝายไม้</option>
-                                <option value="ฝายไม้แกนดิน">ฝายไม้แกนดิน</option>
-                                <option value="ฝายคอกหมู">ฝายคอกหมู</option>
-                                <option value="ฝายหิน">ฝายหิน</option>
-                                <option value="ฝายหินก่อ">ฝายหินก่อ</option>
-                                <option value="ฝายหินเรียงแกนดิน">ฝายหินเรียงแกนดิน</option>
-                                <option value="ฝายหินเรียงแกนคอนกรีตเสริมเหล็ก">ฝายหินเรียงแกนคอนกรีตเสริมเหล็ก</option>
-                                <option value="ฝายคอนกรีตเสริมเหล็ก">ฝายคอนกรีตเสริมเหล็ก</option>
-                                <option value="ฝายประยุกต์">ฝายประยุกต์</option>
-                            </select>
+                        <div class="form-group"><label>รูปแบบของฝาย: </label>
+                            <div class="form-group">
+                                <select name="cdtype" id="cdtype" class="form-select">
+                                    <option value="ฝายไม้">ฝายไม้</option>
+                                    <option value="ฝายไม้แกนดิน">ฝายไม้แกนดิน</option>
+                                    <option value="ฝายคอกหมู">ฝายคอกหมู</option>
+                                    <option value="ฝายหิน">ฝายหิน</option>
+                                    <option value="ฝายปูนผสมดิน">ฝายปูนผสมดิน</option>
+                                    <option value="ฝายคอนกรีต">ฝายคอนกรีต</option>
+                                </select>
+                            </div>
                         </div>
-                        <label>วันที่สร้าง: </label>
-                        <div class="form-group">
-                            <input type="date" name="cddate" id="cddate" value="2024-07-22" class="form-control" />
+                        <!-- <div class="form-group"><label>วันที่สำรวจ: </label>
+                            <div class="form-group">
+                                <input type="date" name="cddate" id="cddate" value="2024-07-22" class="form-control" />
+                            </div>
+                        </div> -->
+                        <div class="form-group"><label>รายละเอียดเพิ่มเติม: </label>
+                            <div class="form-group">
+                                <input type="text" name="cddetail" id="cddetail" class="form-control">
+                            </div>
                         </div>
-                        <label>รายละเอียดเพิ่มเติม: </label>
-                        <div class="form-group">
-                            <input type="text" name="cddetail" id="cddetail" class="form-control">
+                        <div class="form-group"><label>รูปภาพ: </label>
+                            <div class="form-group">
+                                <input type="file" name="cdimage" accept="image/*" id="cdimage" class="form-control">
+                            </div>
                         </div>
-                        <label>รูปภาพ: </label>
-                        <div class="form-group">
-                            <input type="file" name="cdimage" accept="image/*" id="cdimage" class="form-control">
-                        </div>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">ยกเลิก</button>

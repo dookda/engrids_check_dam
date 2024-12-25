@@ -45,7 +45,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.post('/api/submitform', upload.single('cdimage'), async (req, res) => {
-    const { cdname, cdcreator, cddetail, userid, cddate, cdtype } = req.body;
+    const { cdname, cdcreator, cddetail, userid, cdtype } = req.body;
     let { lat, lng } = req.body;
 
     lat = parseFloat(lat);
@@ -58,8 +58,8 @@ app.post('/api/submitform', upload.single('cdimage'), async (req, res) => {
     const cdimage = req.file ? req.file.path : null;
     try {
         const result = await pool.query(
-            'INSERT INTO checkdam (cdname, cdcreator, cddetail, cdimage, userid, lat, lng, geom, cddate, cdtype) VALUES ($1, $2, $3, $4, $5, $6, $7, ST_MakePoint($7::double precision, $6::double precision), $8, $9) RETURNING *;',
-            [cdname, cdcreator, cddetail, cdimage, userid, lat, lng, cddate, cdtype]
+            'INSERT INTO checkdam (cdname, cdcreator, cddetail, cdimage, userid, lat, lng, geom, cddate, cdtype) VALUES ($1, $2, $3, $4, $5, $6, $7, ST_MakePoint($7::double precision, $6::double precision), now(), $8) RETURNING *;',
+            [cdname, cdcreator, cddetail, cdimage, userid, lat, lng, cdtype]
         );
         res.status(200).json({ success: true, data: result.rows[0] });
     } catch (err) {
