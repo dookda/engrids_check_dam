@@ -107,6 +107,19 @@ app.get('/api/sumbymonth', async (req, res) => {
     }
 });
 
+// get checkdam by id
+app.get('/api/getcheckdam/:id', async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        const result = await pool.query('SELECT * FROM checkdam WHERE gid = $1', [id]);
+        res.status(200).json({ success: true, data: result.rows[0] });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
 // delete checkdam by id
 app.delete('/api/deletecheckdam/:id', async (req, res) => {
     const id = req.params.id;
@@ -121,22 +134,63 @@ app.delete('/api/deletecheckdam/:id', async (req, res) => {
 });
 
 // update checkdam by id
-app.put('/api/updatecheckdam/:id', async (req, res) => {
-    const id = req.params.id;
-    const { cdname, cdcreator, cddetail, cdtype, lat, lng, cddate, cdimage } = req.body;
-
+app.put('/api/updatecheckdam/:id', upload.single('cdimage'), async (req, res) => {
     try {
+        const gid = req.params.id;
+        const {
+            userid,
+            cdname,
+            cdcreator,
+            cddetail,
+            cdtype,
+            lat,
+            lng
+        } = req.body;
+
+        console.log('File info:', req.file);
+        console.log('Body fields:', req.body);
+
+
+        // Access the uploaded file via req.file
+        let cdimagePath = null;
+        if (req.file) {
+            cdimagePath = req.file.path;
+
+            // Update the new image path
+            const result = await pool.query(
+                `UPDATE checkdam
+                SET
+                    cdimage = $1
+                WHERE gid = $2
+                RETURNING *`,
+                [cdimagePath, gid]
+            );
+        }
+
+        // Update the checkdam record
         const result = await pool.query(
-            'UPDATE checkdam SET cdname = $1, cdcreator = $2, cddetail = $3, cdtype = $4, lat = $5, lng = $6, cddate = $7, cdimage = $8 WHERE gid = $9 RETURNING *',
-            [cdname, cdcreator, cddetail, cdtype, lat, lng, cddate, cdimage, id]
+            `UPDATE checkdam
+            SET
+                cdname = $1,
+                cdcreator = $2,
+                cddetail = $3,
+                lat = $4,
+                lng = $5,
+                geom = ST_MakePoint($5::double precision, $4::double precision),
+                cddate = now(),
+                cdtype = $6
+            WHERE gid = $7
+            RETURNING *`,
+            [cdname, cdcreator, cddetail, lat, lng, cdtype, gid]
         );
 
-        res.status(200).json({ success: true, data: result.rows[0] });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ success: false, error: err.message });
+        res.json({ success: true, data: 'Checkdam updated successfully.' });
+    } catch (error) {
+        console.error('Error updating checkdam:', error);
+        res.status(500).json({ success: false, error: 'Internal server error.' });
     }
 });
+
 
 // export module
 module.exports = app;

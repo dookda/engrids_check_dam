@@ -32,19 +32,23 @@ const overlayMaps = {};
 
 L.control.layers(baseLayers, overlayMaps).addTo(map);
 
+const redIcon = L.icon({
+    iconUrl: './../assets/pin_red.png',
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32]
+});
+
 let checkdamData = [];
 fetch('/checkdam/api/getcheckdam')
     .then(response => response.json())
     .then(data => {
-        // console.log(data);
-
         let table = $('#checkdamTable').DataTable({
             data: data.data,
             columns: [
                 {
                     data: 'gid',
                     render: function (data, type, row, meta) {
-                        // console.log('Row data:', row);
 
                         return `<button class="btn btn-danger" onclick="deleteCheckdam(${row.gid})">ลบ</button>
                                 <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateModal" onclick="setUpdateForm(${row.gid})">แก้ไข</button>`;
@@ -218,7 +222,7 @@ const displayMarkers = (data) => {
     });
 
     data.forEach(item => {
-        const marker = L.marker([item.lat, item.lng]).addTo(map);
+        const marker = L.marker([item.lat, item.lng], { icon: redIcon }).addTo(map);
         marker.on('click', () => {
             document.getElementById('modal-cdname').textContent = `ชื่อฝาย-สถานที่: ${item.cdname}`;
             document.getElementById('modal-cdcreator').textContent = `ผู้สร้าง-ผู้ดูแล: ${item.cdcreator}`;
@@ -281,27 +285,83 @@ const deleteCheckdam = async (id) => {
     }
 };
 
-// update checkdam function
+// Function to populate the update form with existing data
+const setUpdateForm = async (id) => {
+    try {
+        const response = await fetch(`/checkdam/api/getcheckdam/${id}`);
+        const data = await response.json();
+        if (data.success) {
+            const checkdam = data.data;
+
+            // Populate form fields
+            document.getElementById('id').value = checkdam.gid;
+            document.getElementById('userid').value = checkdam.userid;
+            document.getElementById('cdname').value = checkdam.cdname;
+            document.getElementById('cdcreator').value = checkdam.cdcreator;
+            document.getElementById('cddetail').value = checkdam.cddetail;
+            document.getElementById('cdtype').value = checkdam.cdtype;
+            document.getElementById('lat').value = checkdam.lat;
+            document.getElementById('lng').value = checkdam.lng;
+
+            // Display existing image if available
+            const modalCdimage = document.getElementById('modalCdimage');
+            modalCdimage.innerHTML = ''; // Clear previous content
+            if (checkdam.cdimage) {
+                const imgSrc = `/checkdam/${checkdam.cdimage}`; // Adjust the path as needed
+                modalCdimage.innerHTML = `<img src="${imgSrc}" alt="ภาพฝาย" style="height: 300px;">`;
+            } else {
+                modalCdimage.innerHTML = `<span>ไม่มีภาพ</span>`;
+            }
+
+            const updateForm = document.getElementById('updateForm');
+            updateForm.removeEventListener('submit', handleUpdateSubmit);
+            updateForm.addEventListener('submit', handleUpdateSubmit);
+        } else {
+            console.error('Error getting checkdam:', data.error);
+        }
+    } catch (error) {
+        console.error('Error getting checkdam:', error);
+    }
+};
+
+// Handler function for form submission
+const handleUpdateSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission
+
+    // Get the ID from the hidden input
+    const id = document.getElementById('id').value;
+
+    // Call the update function
+    await updateCheckdam(id);
+};
+
+// Function to update the checkdam
 const updateCheckdam = async (id) => {
     try {
+        // Collect form data
+        const userid = document.getElementById('userid').value;
         const cdname = document.getElementById('cdname').value;
         const cdcreator = document.getElementById('cdcreator').value;
         const cddetail = document.getElementById('cddetail').value;
         const cdtype = document.getElementById('cdtype').value;
         const lat = document.getElementById('lat').value;
         const lng = document.getElementById('lng').value;
-        const cddate = document.getElementById('cddate').value;
-        const cdimage = document.getElementById('cdimage').files[0];
+        const cdimageInput = document.getElementById('cdimage');
+        const cdimage = cdimageInput.files[0];
 
         const formData = new FormData();
+        formData.append('userid', userid);
+        formData.append('id', id);
         formData.append('cdname', cdname);
         formData.append('cdcreator', cdcreator);
         formData.append('cddetail', cddetail);
         formData.append('cdtype', cdtype);
         formData.append('lat', lat);
         formData.append('lng', lng);
-        formData.append('cddate', cddate);
-        formData.append('cdimage', cdimage);
+        formData.append('cddate', new Date().toISOString());
+        if (cdimage) {
+            formData.append('cdimage', cdimage);
+        }
 
         const response = await fetch(`/checkdam/api/updatecheckdam/${id}`, {
             method: 'PUT',
@@ -311,12 +371,17 @@ const updateCheckdam = async (id) => {
         const data = await response.json();
         if (data.success) {
             console.log('Checkdam updated:', data.data);
-            location.reload();
+            // Optionally, close the modal and refresh the table without reloading the page
+            $('#updateModal').modal('hide');
+            // Refresh DataTable or update the row manually
+            location.reload(); // Simplest way, but can be optimized
         } else {
             console.error('Error updating checkdam:', data.error);
+            alert(`Error updating checkdam: ${data.error}`);
         }
     } catch (error) {
         console.error('Error updating checkdam:', error);
+        alert(`Error updating checkdam: ${error.message}`);
     }
 };
 
