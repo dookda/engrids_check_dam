@@ -50,28 +50,37 @@ fetch('/checkdam/api/getcheckdam')
                     data: 'gid',
                     render: function (data, type, row, meta) {
 
-                        return `<button class="btn btn-danger" onclick="deleteCheckdam(${row.gid})">ลบ</button>
-                                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateModal" onclick="setUpdateForm(${row.gid})">แก้ไข</button>`;
+                        return `<button class="btn btn-danger mb-1" onclick="deleteCheckdam(${row.gid})">ลบ</button>
+                                <button class="btn btn-warning mb-1" onclick="setUpdateForm(${row.gid})">แก้ไข</button>`;
                     }
                 },
                 { data: 'cdname' },
                 { data: 'cdcreator' },
                 { data: 'cddetail' },
                 { data: 'cdtype' },
-                { data: 'cddate' },
+                {
+                    data: 'cddate',
+                    render: function (data, type, row, meta) {
+                        const thaiDate = new Date(data);
+                        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                        const thaiDateString = thaiDate.toLocaleDateString('th-TH', options);
+                        const buddhistYear = thaiDate.getFullYear() + 543;
+                        return thaiDateString.replace(thaiDate.getFullYear(), buddhistYear);
+                    }
+                },
                 {
                     data: '',
                     render: function (data, type, row, meta) {
                         return `${row.lat}, ${row.lng}`;
                     }
                 },
-                {
-                    data: '',
-                    render: function (data, type, row, meta) {
-                        const img = row.cdimage ? row.cdimage : 'dashboard/placeholder-image.png';
-                        return `<img src="/checkdam/${img}" alt="ภาพฝาย" style="width: 100px; height: 100px;">`;
-                    }
-                },
+                // {
+                //     data: '',
+                //     render: function (data, type, row, meta) {
+                //         const img = row.cdimage ? row.cdimage : 'dashboard/placeholder-image.png';
+                //         return `<img src="/checkdam/${img}" alt="ภาพฝาย" style="width: 100px; height: 100px;">`;
+                //     }
+                // },
             ],
             scrollX: true, destroy: true,
             dom: 'Bfrtip',
@@ -288,103 +297,12 @@ const deleteCheckdam = async (id) => {
 // Function to populate the update form with existing data
 const setUpdateForm = async (id) => {
     try {
-        const response = await fetch(`/checkdam/api/getcheckdam/${id}`);
-        const data = await response.json();
-        if (data.success) {
-            const checkdam = data.data;
+        window.location.href = `/checkdam/update/index.html?id=${id}`;
 
-            // Populate form fields
-            document.getElementById('id').value = checkdam.gid;
-            document.getElementById('userid').value = checkdam.userid;
-            document.getElementById('cdname').value = checkdam.cdname;
-            document.getElementById('cdcreator').value = checkdam.cdcreator;
-            document.getElementById('cddetail').value = checkdam.cddetail;
-            document.getElementById('cdtype').value = checkdam.cdtype;
-            document.getElementById('lat').value = checkdam.lat;
-            document.getElementById('lng').value = checkdam.lng;
-
-            // Display existing image if available
-            const modalCdimage = document.getElementById('modalCdimage');
-            modalCdimage.innerHTML = ''; // Clear previous content
-            if (checkdam.cdimage) {
-                const imgSrc = `/checkdam/${checkdam.cdimage}`; // Adjust the path as needed
-                modalCdimage.innerHTML = `<img src="${imgSrc}" alt="ภาพฝาย" style="height: 300px;">`;
-            } else {
-                modalCdimage.innerHTML = `<span>ไม่มีภาพ</span>`;
-            }
-
-            const updateForm = document.getElementById('updateForm');
-            updateForm.removeEventListener('submit', handleUpdateSubmit);
-            updateForm.addEventListener('submit', handleUpdateSubmit);
-        } else {
-            console.error('Error getting checkdam:', data.error);
-        }
     } catch (error) {
         console.error('Error getting checkdam:', error);
     }
 };
-
-// Handler function for form submission
-const handleUpdateSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
-
-    // Get the ID from the hidden input
-    const id = document.getElementById('id').value;
-
-    // Call the update function
-    await updateCheckdam(id);
-};
-
-// Function to update the checkdam
-const updateCheckdam = async (id) => {
-    try {
-        // Collect form data
-        const userid = document.getElementById('userid').value;
-        const cdname = document.getElementById('cdname').value;
-        const cdcreator = document.getElementById('cdcreator').value;
-        const cddetail = document.getElementById('cddetail').value;
-        const cdtype = document.getElementById('cdtype').value;
-        const lat = document.getElementById('lat').value;
-        const lng = document.getElementById('lng').value;
-        const cdimageInput = document.getElementById('cdimage');
-        const cdimage = cdimageInput.files[0];
-
-        const formData = new FormData();
-        formData.append('userid', userid);
-        formData.append('id', id);
-        formData.append('cdname', cdname);
-        formData.append('cdcreator', cdcreator);
-        formData.append('cddetail', cddetail);
-        formData.append('cdtype', cdtype);
-        formData.append('lat', lat);
-        formData.append('lng', lng);
-        formData.append('cddate', new Date().toISOString());
-        if (cdimage) {
-            formData.append('cdimage', cdimage);
-        }
-
-        const response = await fetch(`/checkdam/api/updatecheckdam/${id}`, {
-            method: 'PUT',
-            body: formData
-        });
-
-        const data = await response.json();
-        if (data.success) {
-            console.log('Checkdam updated:', data.data);
-            // Optionally, close the modal and refresh the table without reloading the page
-            $('#updateModal').modal('hide');
-            // Refresh DataTable or update the row manually
-            location.reload(); // Simplest way, but can be optimized
-        } else {
-            console.error('Error updating checkdam:', data.error);
-            alert(`Error updating checkdam: ${data.error}`);
-        }
-    } catch (error) {
-        console.error('Error updating checkdam:', error);
-        alert(`Error updating checkdam: ${error.message}`);
-    }
-};
-
 
 document.getElementById('clearSearch').addEventListener('click', function () {
     try {

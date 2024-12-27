@@ -64,65 +64,68 @@
             </div>
         </div>
 
-        <div class="card mt-1" id="map"></div>
-    </div>
+        <div class="col-12 mb-4">
+            <div class="card mt-1" id="map"></div>
+        </div>
 
-    <div class="modal fade text-left" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <form id="checkDamForm" enctype="multipart/form-data">
-                    <div class="modal-body">
-                        <input type="hidden" name="userid" id="userid">
-                        <div class="form-group"><label>ชื่อฝาย: </label>
-                            <div class="form-group">
-                                <input type="text" name="cdname" id="cdname" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group"> <label>ผู้สร้าง/ผู้ดูแล: </label>
-                            <div class="form-group">
-                                <input type="text" name="cdcreator" id="cdcreator" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group"><label>รูปแบบของฝาย: </label>
-                            <div class="form-group">
-                                <select name="cdtype" id="cdtype" class="form-select">
-                                    <option value="ฝายไม้">ฝายไม้</option>
-                                    <option value="ฝายไม้แกนดิน">ฝายไม้แกนดิน</option>
-                                    <option value="ฝายคอกหมู">ฝายคอกหมู</option>
-                                    <option value="ฝายหิน">ฝายหิน</option>
-                                    <option value="ฝายปูนผสมดิน">ฝายปูนผสมดิน</option>
-                                    <option value="ฝายคอนกรีต">ฝายคอนกรีต</option>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- <div class="form-group"><label>วันที่สำรวจ: </label>
-                            <div class="form-group">
-                                <input type="date" name="cddate" id="cddate" value="2024-07-22" class="form-control" />
-                            </div>
-                        </div> -->
-                        <div class="form-group"><label>รายละเอียดเพิ่มเติม: </label>
-                            <div class="form-group">
-                                <!-- <input type="text" name="cddetail" id="cddetail" class="form-control"> -->
-                                <textarea name="cddetail" id="cddetail" class="form-control" rows="3"></textarea>
-                            </div>
-                        </div>
-                        <div class="form-group"><label>รูปภาพ: </label>
-                            <div class="form-group">
-                                <input type="file" name="cdimage" accept="image/*" id="cdimage" class="form-control">
-                            </div>
-                        </div>
+        <div class="col-12 mb-4">
+            <form id="checkDamForm" enctype="multipart/form-data">
+                <input type="hidden" name="userid" id="userid">
+                <div class="form-group"><label>ชื่อฝาย: </label>
+                    <div class="form-group">
+                        <input type="text" name="cdname" id="cdname" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group"> <label>ผู้สร้าง/ผู้ดูแล: </label>
+                    <div class="form-group">
+                        <input type="text" name="cdcreator" id="cdcreator" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group"><label>รูปแบบของฝาย: </label>
+                    <div class="form-group">
+                        <select name="cdtype" id="cdtype" class="form-select">
+                            <option value="ฝายไม้">ฝายไม้</option>
+                            <option value="ฝายไม้แกนดิน">ฝายไม้แกนดิน</option>
+                            <option value="ฝายคอกหมู">ฝายคอกหมู</option>
+                            <option value="ฝายหิน">ฝายหิน</option>
+                            <option value="ฝายปูนผสมดิน">ฝายปูนผสมดิน</option>
+                            <option value="ฝายคอนกรีต">ฝายคอนกรีต</option>
+                        </select>
+                    </div>
+                </div>
 
+                <div class="form-group"><label>วันที่กรอกข้อมูล: </label>
+                    <div class="form-group">
+                        <input type="text" name="cddate" id="cddate" value="2024-07-22" class="form-control" disabled />
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">ยกเลิก</button>
-                        <button type="submit" class="btn btn-primary">บันทึก</button>
+                </div>
+
+                <div class="form-group"><label>รายละเอียดเพิ่มเติม: </label>
+                    <div class="form-group">
+                        <textarea name="cddetail" id="cddetail" class="form-control" rows="3"></textarea>
+                        <!-- <input type="text" name="cddetail" id="cddetail" class="form-control"> -->
                     </div>
-                </form>
-            </div>
+                </div>
+
+                <div class="form-group" id="imageContainer">
+                    <!-- show image responsive -->
+
+                </div>
+
+                <div class="form-group"><label>รูปภาพ: </label>
+                    <div class="form-group">
+                        <input type="file" name="cdimage" accept="image/*" id="cdimage" class="form-control">
+                    </div>
+                </div>
+
+
+                <div class="footer">
+                    <a type="button" class="btn btn-light" href="./../dashboard/index.html">ยกเลิก</a>
+                    <button type="submit" class="btn btn-primary">บันทึก</button>
+                </div>
+            </form>
         </div>
     </div>
-
-
 
     <div class="toast-container position-fixed top-0 end-0 p-3">
         <div id="myToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
@@ -136,12 +139,13 @@
             </div>
         </div>
     </div>
+
     <div class="container-fluid">
         <hr>
         <footer>
             <div class="footer clearfix mb-0 text-muted">
                 <div class="float-start">
-                    <!-- <p>2024 ©</p> -->
+                    <!-- <p>2025 ©</p> -->
                 </div>
                 <div class="float-end">
                     <p>พัฒนาด้วย <span class="text-danger"><i class="bi bi-heart-fill icon-mid"></i></span>

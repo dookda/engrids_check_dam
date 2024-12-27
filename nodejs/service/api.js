@@ -45,21 +45,30 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.post('/api/submitform', upload.single('cdimage'), async (req, res) => {
-    const { cdname, cdcreator, cddetail, userid, cdtype } = req.body;
-    let { lat, lng } = req.body;
-
-    lat = parseFloat(lat);
-    lng = parseFloat(lng);
-
-    if (isNaN(lat) || isNaN(lng)) {
-        return res.status(400).json({ success: false, error: "Invalid latitude or longitude" });
-    }
-
-    const cdimage = req.file ? req.file.path : null;
     try {
+        const { cdname, cdcreator, cddetail, userid, cdtype } = req.body;
+        let { lat, lng } = req.body;
+
+        lat = parseFloat(lat);
+        lng = parseFloat(lng);
+
+        if (isNaN(lat) || isNaN(lng)) {
+            return res.status(400).json({ success: false, error: "Invalid latitude or longitude" });
+        }
+
+        // create code text from timestamp
+        const timestamp = new Date().getTime();
+        const imgcode = timestamp.toString(36);
+
+        if (req.file) {
+            const pathimage = req.file.path;
+            const sql = 'INSERT INTO images (userid, cdimage, pathimage) VALUES ($1, $2, $3) RETURNING *';
+            const result = await pool.query(sql, [userid, imgcode, pathimage]);
+        }
+
         const result = await pool.query(
-            'INSERT INTO checkdam (cdname, cdcreator, cddetail, cdimage, userid, lat, lng, geom, cddate, cdtype) VALUES ($1, $2, $3, $4, $5, $6, $7, ST_MakePoint($7::double precision, $6::double precision), now(), $8) RETURNING *;',
-            [cdname, cdcreator, cddetail, cdimage, userid, lat, lng, cdtype]
+            'INSERT INTO checkdam (cdname, cdcreator, cddetail, userid, lat, lng, geom, cddate, cdtype, cdimage) VALUES ($1, $2, $3, $4, $5, $6, ST_MakePoint($6::double precision, $5::double precision), now(), $7, $8) RETURNING *;',
+            [cdname, cdcreator, cddetail, userid, lat, lng, cdtype, imgcode]
         );
         res.status(200).json({ success: true, data: result.rows[0] });
     } catch (err) {
@@ -109,11 +118,22 @@ app.get('/api/sumbymonth', async (req, res) => {
 
 // get checkdam by id
 app.get('/api/getcheckdam/:id', async (req, res) => {
-    const id = req.params.id;
-
     try {
+        const id = req.params.id;
         const result = await pool.query('SELECT * FROM checkdam WHERE gid = $1', [id]);
         res.status(200).json({ success: true, data: result.rows[0] });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// get images by userid
+app.get('/api/getimages/:userid', async (req, res) => {
+    try {
+        const userid = req.params.userid;
+        const result = await pool.query('SELECT * FROM images WHERE userid = $1', [userid]);
+        res.status(200).json({ success: true, data: result.rows });
     } catch (err) {
         console.error(err);
         res.status(500).json({ success: false, error: err.message });

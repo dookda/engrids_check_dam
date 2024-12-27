@@ -26,9 +26,3 @@ body {
     line-height: 0.2;
     color: #25396f;
 }
-
-.dataTables_wrapper thead th {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
