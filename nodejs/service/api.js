@@ -129,10 +129,11 @@ app.get('/api/getcheckdam/:id', async (req, res) => {
 });
 
 // get images by userid
-app.get('/api/getimages/:userid', async (req, res) => {
+app.get('/api/getimages/:userid/:cdimage', async (req, res) => {
     try {
         const userid = req.params.userid;
-        const result = await pool.query('SELECT * FROM images WHERE userid = $1', [userid]);
+        const cdimage = req.params.cdimage;
+        const result = await pool.query('SELECT * FROM images WHERE userid = $1 AND cdimage = $2', [userid, cdimage]);
         res.status(200).json({ success: true, data: result.rows });
     } catch (err) {
         console.error(err);

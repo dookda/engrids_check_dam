@@ -76,12 +76,12 @@ const updateMarker = () => {
     map.setView([lat, lng], 16);
 }
 
-const showImages = (userid) => {
+const showImages = (userid, cdimage) => {
     try {
-        fetch(`/checkdam/api/getimages/${userid}`)
+        fetch(`/checkdam/api/getimages/${userid}/${cdimage}`)
             .then(response => response.json())
             .then(data => {
-                console.log(data);
+                // console.log(data);
                 const images = data.data;
                 if (images.length === 0) {
                     return;
@@ -89,8 +89,10 @@ const showImages = (userid) => {
                 const imageContainer = document.getElementById('imageContainer');
                 imageContainer.innerHTML = '';
                 images.forEach(image => {
-                    const img = image ? image : '/checkdam/upload/placeholder-image.png';
-                    imageContainer.innerHTML += `<img src="/checkdam/${img}" alt="ภาพฝาย" style="width: 100px; height: 100px;">`;
+                    console.log(image);
+
+                    const img = image.pathimage ? image.pathimage : 'uploads/placeholder-image.png';
+                    imageContainer.innerHTML += `<img src="/checkdam/${img}" alt="ภาพฝาย" style="width: 200px">`;
                 });
             });
 
@@ -99,7 +101,6 @@ const showImages = (userid) => {
 
     }
 }
-
 
 const displayMarkers = (data) => {
     map.eachLayer((layer) => {
@@ -129,18 +130,7 @@ const displayMarkers = (data) => {
         const formattedThaiDate = thaiDateString.replace(thaiDate.getFullYear(), buddhistYear);
         document.getElementById('cddate').value = formattedThaiDate;
 
-        showImages(item.userid)
-
-        // if (item.cdimage) {
-        //     const img = row.cdimage ? row.cdimage : 'dashboard/placeholder-image.png';
-        //     document.getElementById('imagePreview') = `<img src="/checkdam/${img}" alt="ภาพฝาย" style="width: 100px; height: 100px;">`;
-
-        // } else {
-        //     cdimageElement.style.display = 'none';
-        // }
-
-        const checkdamModal = new bootstrap.Modal(document.getElementById('checkdamModal'));
-        checkdamModal.show();
+        showImages(item.userid, item.cdimage);
     });
 };
 
@@ -148,7 +138,7 @@ const getCheckdams = async (id) => {
     try {
         const response = await fetch(`/checkdam/api/getcheckdam/${id}`);
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
 
         if (data.success) {
             displayMarkers([data.data]);
@@ -183,9 +173,7 @@ const setUpdateForm = async (id) => {
         const data = await response.json();
         if (data.success) {
             const checkdam = data.data;
-
-            // Populate form fields
-            document.getElementById('id').value = checkdam.gid;
+            // console.log('Checkdam:', checkdam);
             document.getElementById('userid').value = checkdam.userid;
             document.getElementById('cdname').value = checkdam.cdname;
             document.getElementById('cdcreator').value = checkdam.cdcreator;
@@ -193,16 +181,6 @@ const setUpdateForm = async (id) => {
             document.getElementById('cdtype').value = checkdam.cdtype;
             document.getElementById('lat').value = checkdam.lat;
             document.getElementById('lng').value = checkdam.lng;
-
-            // Display existing image if available
-            const modalCdimage = document.getElementById('modalCdimage');
-            modalCdimage.innerHTML = ''; // Clear previous content
-            if (checkdam.cdimage) {
-                const imgSrc = `/checkdam/${checkdam.cdimage}`; // Adjust the path as needed
-                modalCdimage.innerHTML = `<img src="${imgSrc}" alt="ภาพฝาย" style="height: 300px;">`;
-            } else {
-                modalCdimage.innerHTML = `<span>ไม่มีภาพ</span>`;
-            }
 
             const updateForm = document.getElementById('updateForm');
             updateForm.removeEventListener('submit', handleUpdateSubmit);
@@ -281,6 +259,6 @@ window.onload = () => {
     const id = urlParams.get('id');
     if (id) {
         getCheckdams(id);
-        setUpdateForm(id);
+        // setUpdateForm(id);
     }
 }
