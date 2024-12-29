@@ -77,6 +77,39 @@ app.post('/api/submitform', upload.single('cdimage'), async (req, res) => {
     }
 });
 
+app.post('/api/submitimage', upload.single('image'), (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: 'No file uploaded' });
+        }
+
+        const { cdimage, userid } = req.body;
+        const filePath = req.file.path;
+        const sql = `INSERT INTO images (userid, cdimage, pathimage) VALUES (?, ?, ?)`;
+
+        pool.query(sql, [userid, cdimage, filePath], (error, result) => {
+            if (error) {
+                console.error('DB insert error:', error);
+                return res.status(500).json({ success: false, message: 'Database error', error: error });
+            }
+
+            return res.json({
+                success: true,
+                message: 'Image uploaded and data inserted successfully',
+                insertedId: result.insertId,
+                fileInfo: {
+                    originalName: req.file.originalname,
+                    filename: req.file.filename,
+                    path: filePath,
+                },
+            });
+        });
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    }
+});
+
 app.get('/api/getcheckdam', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM checkdam');
@@ -168,27 +201,6 @@ app.put('/api/updatecheckdam/:id', upload.single('cdimage'), async (req, res) =>
             lng
         } = req.body;
 
-        console.log('File info:', req.file);
-        console.log('Body fields:', req.body);
-
-
-        // Access the uploaded file via req.file
-        let cdimagePath = null;
-        if (req.file) {
-            cdimagePath = req.file.path;
-
-            // Update the new image path
-            const result = await pool.query(
-                `UPDATE checkdam
-                SET
-                    cdimage = $1
-                WHERE gid = $2
-                RETURNING *`,
-                [cdimagePath, gid]
-            );
-        }
-
-        // Update the checkdam record
         const result = await pool.query(
             `UPDATE checkdam
             SET

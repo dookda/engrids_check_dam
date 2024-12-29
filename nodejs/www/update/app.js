@@ -47,6 +47,16 @@ const removeMarker = () => {
     });
 }
 
+const openToast = () => {
+    var toast = new bootstrap.Toast(document.getElementById('myToast'));
+    toast.show();
+
+    setTimeout(function () {
+        toast.hide();
+
+    }, 3000);
+}
+
 const onMapClick = (e) => {
     removeMarker();
     document.getElementById('lat').value = e.latlng.lat;
@@ -89,16 +99,13 @@ const showImages = (userid, cdimage) => {
                 const imageContainer = document.getElementById('imageContainer');
                 imageContainer.innerHTML = '';
                 images.forEach(image => {
-                    console.log(image);
-
                     const img = image.pathimage ? image.pathimage : 'uploads/placeholder-image.png';
-                    imageContainer.innerHTML += `<img src="/checkdam/${img}" alt="ภาพฝาย" style="width: 200px">`;
+                    imageContainer.innerHTML += `<img src="/checkdam/${img}" alt="ภาพฝาย" class="rounded img-fluid mx-auto">`;
                 });
             });
 
     } catch (error) {
         console.error('Error getting images:', error);
-
     }
 }
 
@@ -117,6 +124,8 @@ const displayMarkers = (data) => {
 
         document.getElementById('lat').value = item.lat;
         document.getElementById('lng').value = item.lng;
+        document.getElementById('userid').value = item.userid;
+        document.getElementById('cdimage').value = item.cdimage;
 
         document.getElementById('cdname').value = `${item.cdname}`;
         document.getElementById('cdcreator').value = `${item.cdcreator}`;
@@ -150,115 +159,125 @@ const getCheckdams = async (id) => {
     }
 }
 
-// delete checkdam function
-const deleteCheckdam = async (id) => {
+const insertImage = async (userid, cdimage, pathimage) => {
     try {
-        const response = await fetch(`/checkdam/api/deletecheckdam/${id}`, { method: 'DELETE' });
-        const data = await response.json();
-        if (data.success) {
-            console.log('Checkdam deleted:', data.data);
-            location.reload();
-        } else {
-            console.error('Error deleting checkdam:', data.error);
-        }
-    } catch (error) {
-        console.error('Error deleting checkdam:', error);
-    }
-};
-
-// Function to populate the update form with existing data
-const setUpdateForm = async (id) => {
-    try {
-        const response = await fetch(`/checkdam/api/getcheckdam/${id}`);
-        const data = await response.json();
-        if (data.success) {
-            const checkdam = data.data;
-            // console.log('Checkdam:', checkdam);
-            document.getElementById('userid').value = checkdam.userid;
-            document.getElementById('cdname').value = checkdam.cdname;
-            document.getElementById('cdcreator').value = checkdam.cdcreator;
-            document.getElementById('cddetail').value = checkdam.cddetail;
-            document.getElementById('cdtype').value = checkdam.cdtype;
-            document.getElementById('lat').value = checkdam.lat;
-            document.getElementById('lng').value = checkdam.lng;
-
-            const updateForm = document.getElementById('updateForm');
-            updateForm.removeEventListener('submit', handleUpdateSubmit);
-            updateForm.addEventListener('submit', handleUpdateSubmit);
-        } else {
-            console.error('Error getting checkdam:', data.error);
-        }
-    } catch (error) {
-        console.error('Error getting checkdam:', error);
-    }
-};
-
-// Handler function for form submission
-const handleUpdateSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
-
-    // Get the ID from the hidden input
-    const id = document.getElementById('id').value;
-
-    // Call the update function
-    await updateCheckdam(id);
-};
-
-// Function to update the checkdam
-const updateCheckdam = async (id) => {
-    try {
-        // Collect form data
-        const userid = document.getElementById('userid').value;
-        const cdname = document.getElementById('cdname').value;
-        const cdcreator = document.getElementById('cdcreator').value;
-        const cddetail = document.getElementById('cddetail').value;
-        const cdtype = document.getElementById('cdtype').value;
-        const lat = document.getElementById('lat').value;
-        const lng = document.getElementById('lng').value;
-        const cdimageInput = document.getElementById('cdimage');
-        const cdimage = cdimageInput.files[0];
-
         const formData = new FormData();
         formData.append('userid', userid);
-        formData.append('id', id);
-        formData.append('cdname', cdname);
-        formData.append('cdcreator', cdcreator);
-        formData.append('cddetail', cddetail);
-        formData.append('cdtype', cdtype);
-        formData.append('lat', lat);
-        formData.append('lng', lng);
-        formData.append('cddate', new Date().toISOString());
-        if (cdimage) {
-            formData.append('cdimage', cdimage);
-        }
+        formData.append('cdimage', cdimage);
+        formData.append('pathimage', pathimage);
 
-        const response = await fetch(`/checkdam/api/updatecheckdam/${id}`, {
-            method: 'PUT',
+        const response = await fetch('/checkdam/api/insertimage', {
+            method: 'POST',
             body: formData
         });
 
-        const data = await response.json();
-        if (data.success) {
-            console.log('Checkdam updated:', data.data);
-            // Optionally, close the modal and refresh the table without reloading the page
-            $('#updateModal').modal('hide');
-            // Refresh DataTable or update the row manually
-            location.reload(); // Simplest way, but can be optimized
-        } else {
-            console.error('Error updating checkdam:', data.error);
-            alert(`Error updating checkdam: ${data.error}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-    } catch (error) {
-        console.error('Error updating checkdam:', error);
-        alert(`Error updating checkdam: ${error.message}`);
-    }
-};
 
-window.onload = () => {
+        const result = await response.json();
+        console.log(result);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
     if (id) {
         getCheckdams(id);
-        // setUpdateForm(id);
     }
+
+    const form = document.getElementById('checkDamForm');
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const lat = document.getElementById('lat').value;
+        const lng = document.getElementById('lng').value;
+        formData.append('lat', lat);
+        formData.append('lng', lng);
+
+        try {
+            const response = await fetch('/checkdam/api/updatecheckdam/' + id, {
+                method: 'PUT',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+
+            // form.reset();
+            openToast();
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+
+    // const imgForm = document.getElementById('imageUpload');
+    // imgForm.addEventListener('change', async function (e) {
+    //     e.preventDefault();
+
+    //     const formData = new FormData(this);
+    //     const cdimage = document.getElementById('cdimage').value;
+    //     const userid = document.getElementById('userid').value;
+    //     formData.append('cdimage', cdimage);
+    //     formData.append('userid', userid);
+
+    //     try {
+    //         const response = await fetch('/checkdam/api/submitimage/' + id, {
+    //             method: 'POST',
+    //             body: formData
+    //         });
+
+    //         if (!response.ok) {
+    //             throw new Error(`HTTP error! status: ${response.status}`);
+    //         }
+
+    //         const result = await response.json();
+
+    //         // form.reset();
+    //         openToast();
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //     }
+    // });
+});
+
+async function uploadImage(event) {
+    const file = event.target.files[0];
+    if (!file) return; // If user cancels or no file is selected
+
+    const formData = new FormData();
+    const cdimage = document.getElementById('cdimage').value;
+    const userid = document.getElementById('userid').value;
+    formData.append('cdimage', cdimage);
+    formData.append('userid', userid);
+    formData.append('image', file);
+
+    try {
+        const response = await fetch('/checkdam/api/submitimage', {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('Upload success:', result);
+        // Display success, preview image, etc.
+    } catch (error) {
+        console.error('Upload error:', error);
+        // Handle the error, show an error message, etc.
+    }
+}
+
+window.onload = () => {
+
 }

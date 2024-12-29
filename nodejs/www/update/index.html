@@ -96,7 +96,7 @@
 
                 <div class="form-group"><label>วันที่กรอกข้อมูล: </label>
                     <div class="form-group">
-                        <input type="text" name="cddate" id="cddate" value="2024-07-22" class="form-control" disabled />
+                        <input type="text" id="cddate" class="form-control" disabled />
                     </div>
                 </div>
 
@@ -108,15 +108,15 @@
                 </div>
 
                 <div class="form-group">
-                    <label>รูปภาพ: </label>
-                    <div id="imageContainer"></div>
+                    <input type="hidden" name="cdimage" id="cdimage" class="form-control">
+                    <label>เพิ่มรูปภาพ: </label>
+                    <input type="file" name="imageUpload" id="imageUpload" accept="image/*" class="form-control"
+                        onchange="uploadImage(event)">
                 </div>
 
                 <div class="form-group">
-                    <div class="form-group">
-                        <label>เพิ่มรูปภาพ: </label>
-                        <input type="file" name="cdimage" accept="image/*" id="cdimage" class="form-control">
-                    </div>
+                    <label>รูปภาพ: </label>
+                    <div id="imageContainer"></div>
                 </div>
 
 
@@ -124,6 +124,10 @@
                     <a type="button" class="btn btn-light" href="./../dashboard/index.html">ยกเลิก</a>
                     <button type="submit" class="btn btn-primary">บันทึก</button>
                 </div>
+            </form>
+
+            <form action="">
+
             </form>
         </div>
     </div>
