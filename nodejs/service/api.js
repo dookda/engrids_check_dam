@@ -85,7 +85,7 @@ app.post('/api/submitimage', upload.single('image'), (req, res) => {
 
         const { cdimage, userid } = req.body;
         const filePath = req.file.path;
-        const sql = `INSERT INTO images (userid, cdimage, pathimage) VALUES (?, ?, ?)`;
+        const sql = 'INSERT INTO images (userid, cdimage, pathimage) VALUES ($1, $2, $3) RETURNING *';
 
         pool.query(sql, [userid, cdimage, filePath], (error, result) => {
             if (error) {

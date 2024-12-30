@@ -100,7 +100,7 @@ const showImages = (userid, cdimage) => {
                 imageContainer.innerHTML = '';
                 images.forEach(image => {
                     const img = image.pathimage ? image.pathimage : 'uploads/placeholder-image.png';
-                    imageContainer.innerHTML += `<img src="/checkdam/${img}" alt="ภาพฝาย" class="rounded img-fluid mx-auto">`;
+                    imageContainer.innerHTML += `<img src="/checkdam/${img}" alt="ภาพฝาย" class="rounded img-fluid mx-auto mb-1">`;
                 });
             });
 
@@ -159,16 +159,22 @@ const getCheckdams = async (id) => {
     }
 }
 
-const insertImage = async (userid, cdimage, pathimage) => {
-    try {
-        const formData = new FormData();
-        formData.append('userid', userid);
-        formData.append('cdimage', cdimage);
-        formData.append('pathimage', pathimage);
 
-        const response = await fetch('/checkdam/api/insertimage', {
+const uploadImage = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    const cdimage = document.getElementById('cdimage').value;
+    const userid = document.getElementById('userid').value;
+    formData.append('cdimage', cdimage);
+    formData.append('userid', userid);
+    formData.append('image', file);
+
+    try {
+        const response = await fetch('/checkdam/api/submitimage', {
             method: 'POST',
-            body: formData
+            body: formData,
         });
 
         if (!response.ok) {
@@ -176,9 +182,14 @@ const insertImage = async (userid, cdimage, pathimage) => {
         }
 
         const result = await response.json();
-        console.log(result);
+        console.log('Upload success:', result);
+
+        if (result.success) {
+            showImages(userid, cdimage);
+            document.getElementById('imageUpload').value = '';
+        }
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Upload error:', error);
     }
 }
 
@@ -218,66 +229,4 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // const imgForm = document.getElementById('imageUpload');
-    // imgForm.addEventListener('change', async function (e) {
-    //     e.preventDefault();
-
-    //     const formData = new FormData(this);
-    //     const cdimage = document.getElementById('cdimage').value;
-    //     const userid = document.getElementById('userid').value;
-    //     formData.append('cdimage', cdimage);
-    //     formData.append('userid', userid);
-
-    //     try {
-    //         const response = await fetch('/checkdam/api/submitimage/' + id, {
-    //             method: 'POST',
-    //             body: formData
-    //         });
-
-    //         if (!response.ok) {
-    //             throw new Error(`HTTP error! status: ${response.status}`);
-    //         }
-
-    //         const result = await response.json();
-
-    //         // form.reset();
-    //         openToast();
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //     }
-    // });
 });
-
-async function uploadImage(event) {
-    const file = event.target.files[0];
-    if (!file) return; // If user cancels or no file is selected
-
-    const formData = new FormData();
-    const cdimage = document.getElementById('cdimage').value;
-    const userid = document.getElementById('userid').value;
-    formData.append('cdimage', cdimage);
-    formData.append('userid', userid);
-    formData.append('image', file);
-
-    try {
-        const response = await fetch('/checkdam/api/submitimage', {
-            method: 'POST',
-            body: formData,
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const result = await response.json();
-        console.log('Upload success:', result);
-        // Display success, preview image, etc.
-    } catch (error) {
-        console.error('Upload error:', error);
-        // Handle the error, show an error message, etc.
-    }
-}
-
-window.onload = () => {
-
-}
