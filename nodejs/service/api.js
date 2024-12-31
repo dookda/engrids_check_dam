@@ -33,6 +33,46 @@ app.post('/api/user', async (req, res) => {
     }
 });
 
+// update user by id
+app.put('/api/user', async (req, res) => {
+    try {
+        // Destructure the fields from req.body
+        const { userid, username, fname, lname, mooban, auth } = req.body;
+        console.log('Request body:', req.body);
+
+        // Update query
+        const updateQuery = `
+        UPDATE users
+        SET 
+          username = $2,
+          fname = $3,
+          lname = $4,
+          mooban = $5,
+          auth = $6,
+          updated_at = CURRENT_TIMESTAMP
+        WHERE userid = $1
+        RETURNING *;
+      `;
+
+        const result = await pool.query(updateQuery, [
+            userid,
+            username,
+            fname,
+            lname,
+            mooban,
+            auth
+        ]);
+
+        res.status(200).json({
+            success: true,
+            data: result.rows[0] || 'No rows updated'
+        });
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).json({ success: false, error: 'Internal server error.' });
+    }
+});
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/');
