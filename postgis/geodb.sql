@@ -5,7 +5,7 @@
 -- Dumped from database version 16.0 (Debian 16.0-1.pgdg110+1)
 -- Dumped by pg_dump version 17.0
 
--- Started on 2024-12-30 20:43:13 +07
+-- Started on 2024-12-31 20:37:29 +07
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -163,7 +163,11 @@ CREATE TABLE public.users (
     userid text NOT NULL,
     username text,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    auth text,
+    fname text,
+    lname text,
+    mooban text
 );
 
 
@@ -258,7 +262,7 @@ INSERT INTO public.images (gid, userid, cdimage, pathimage, ts) VALUES (7, 'Ue34
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.users (gid, userid, username, created_at, updated_at) VALUES (1, 'Ue340022c2f6d6c989a3c4120991d90d1', 'sakda.homhuan', '2024-08-18 02:37:20.238971', '2024-12-30 13:24:42.905778') ON CONFLICT DO NOTHING;
+INSERT INTO public.users (gid, userid, username, created_at, updated_at, auth, fname, lname, mooban) VALUES (1, 'Ue340022c2f6d6c989a3c4120991d90d1', 'sakda.homhuan', '2024-08-18 02:37:20.238971', '2024-12-31 13:36:32.800839', 'admin', 'dab', 'homhuan', '') ON CONFLICT DO NOTHING;
 
 
 --
@@ -285,7 +289,7 @@ SELECT pg_catalog.setval('public.images_gid_seq', 7, true);
 -- Name: users_gid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_gid_seq', 53, true);
+SELECT pg_catalog.setval('public.users_gid_seq', 85, true);
 
 
 --
@@ -324,7 +328,7 @@ ALTER TABLE ONLY public.checkdam
     ADD CONSTRAINT checkdam_userid_fkey FOREIGN KEY (userid) REFERENCES public.users(userid) ON DELETE SET NULL;
 
 
--- Completed on 2024-12-30 20:43:13 +07
+-- Completed on 2024-12-31 20:37:30 +07
 
 --
 -- PostgreSQL database dump complete
