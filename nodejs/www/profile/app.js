@@ -32,7 +32,7 @@ liff.init({
                     document.getElementById('lname').value = data.data.lname;
                     document.getElementById('mooban').value = data.data.mooban;
                     document.getElementById('auth').value = data.data.auth;
-                    console.log(data);
+                    // console.log(data);
                 } else {
                     console.error('Error:', data.error);
                 }
@@ -85,8 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             const result = await response.json();
-            console.log('Result:', result);
-
+            // console.log('Result:', result);
             if (result.success) {
                 openToast();
             }
