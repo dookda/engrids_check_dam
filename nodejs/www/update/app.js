@@ -91,7 +91,6 @@ const showImages = (userid, cdimage) => {
         fetch(`/checkdam/api/getimages/${userid}/${cdimage}`)
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 const images = data.data;
                 if (images.length === 0) {
                     return;
@@ -115,9 +114,6 @@ const displayMarkers = (data) => {
             map.removeLayer(layer);
         }
     });
-
-    console.log(data);
-
 
     data.forEach(item => {
         const marker = L.marker([item.lat, item.lng], { name: 'marker', icon: redIcon }).addTo(map);
@@ -146,11 +142,10 @@ const displayMarkers = (data) => {
     });
 };
 
-const getCheckdams = async (id) => {
+const getCheckdams = async (id, userid) => {
     try {
-        const response = await fetch(`/checkdam/api/getcheckdam/${id}`);
+        const response = await fetch(`/checkdam/api/getcheckdam_by_id/${id}/${userid}`);
         const data = await response.json();
-        // console.log(data);
 
         if (data.success) {
             displayMarkers([data.data]);
@@ -198,8 +193,9 @@ const uploadImage = async (event) => {
 document.addEventListener('DOMContentLoaded', function () {
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
-    if (id) {
-        getCheckdams(id);
+    const userid = urlParams.get('userid');
+    if (id && userid) {
+        getCheckdams(id, userid);
     }
 
     const form = document.getElementById('checkDamForm');

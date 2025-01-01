@@ -24,6 +24,7 @@ liff.init({
             .then(data => {
                 if (data.success) {
                     console.log('ok');
+                    getAllData();
                 } else {
                     console.error('Error:', data.error);
                 }
@@ -64,7 +65,10 @@ const baseLayers = {
     "Google Hybrid": gmap_hybrid.addTo(map)
 };
 
-const overlayMaps = {};
+// create feature group for markers
+const markers = L.featureGroup();
+
+const overlayMaps = { "ตำแหน่งฝาย": markers.addTo(map) };
 
 L.control.layers(baseLayers, overlayMaps).addTo(map);
 
@@ -79,7 +83,9 @@ let checkdamData = [];
 const getAllData = async () => {
     try {
         const userId = document.getElementById('userid').value;
-        const response = await fetch('/checkdam/api/getcheckdam/' + userId);
+        console.log(userId);
+
+        const response = await fetch('/checkdam/api/getcheckdam_by_userid/' + userId);
         if (!response.ok) {
             throw new Error(`Network response was not ok: ${response.status}`);
         }
@@ -98,7 +104,7 @@ const getAllData = async () => {
                         render: function (data, type, row, meta) {
 
                             return `<button class="btn btn-danger" onclick="deleteCheckdam(${row.gid})">ลบ</button>
-                                <button class="btn btn-warning" onclick="setUpdateForm(${row.gid})">แก้ไข</button>`;
+                                <button class="btn btn-warning" onclick="setUpdateForm(${row.gid}, '${row.userid}')">แก้ไข</button>`;
                         }
                     },
                     { data: 'cdname' },
@@ -171,6 +177,7 @@ const getAllData = async () => {
         console.error('Error getting all checkdams:', error);
     }
 }
+
 const updateCards = (data) => {
     const totalCheckdams = data.length;
     document.getElementById('totalcd').textContent = `${totalCheckdams} ฝาย`;
@@ -283,7 +290,7 @@ const displayMarkers = (data) => {
     });
 
     data.forEach(item => {
-        const marker = L.marker([item.lat, item.lng], { icon: redIcon }).addTo(map);
+        const marker = L.marker([item.lat, item.lng], { icon: redIcon });
         marker.on('click', () => {
             document.getElementById('modal-cdname').textContent = `ชื่อฝาย-สถานที่: ${item.cdname}`;
             document.getElementById('modal-cdcreator').textContent = `ผู้สร้าง-ผู้ดูแล: ${item.cdcreator}`;
@@ -310,7 +317,10 @@ const displayMarkers = (data) => {
             const checkdamModal = new bootstrap.Modal(document.getElementById('checkdamModal'));
             checkdamModal.show();
         });
+        markers.addLayer(marker);
     });
+    // fit bounds to markers
+    map.fitBounds(markers.getBounds());
 };
 
 document.getElementById('search').addEventListener('input', function () {
@@ -357,9 +367,9 @@ const deleteCheckdam = async (id) => {
 };
 
 // Function to populate the update form with existing data
-const setUpdateForm = async (id) => {
+const setUpdateForm = async (id, userid) => {
     try {
-        window.location.href = `/checkdam/update/index.html?id=${id}`;
+        window.location.href = `/checkdam/update/index.html?id=${id}&userid=${userid}`;
 
     } catch (error) {
         console.error('Error getting checkdam:', error);
@@ -375,8 +385,4 @@ document.getElementById('clearSearch').addEventListener('click', function () {
     } catch (error) {
         console.error('Error resetting search:', error);
     }
-});
-
-document.addEventListener('DOMContentLoaded', function () {
-    getAllData();
 });

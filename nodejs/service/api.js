@@ -189,11 +189,23 @@ app.get('/api/getcheckdam', async (req, res) => {
     }
 });
 
-app.get('/api/getcheckdam/:userid', async (req, res) => {
+app.get('/api/getcheckdam_by_userid/:userid', async (req, res) => {
     try {
         const userid = req.params.userid;
         const result = await pool.query('SELECT * FROM checkdam WHERE userid = $1', [userid]);
         res.status(200).json({ success: true, data: result.rows });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// get checkdam by id and userid
+app.get('/api/getcheckdam_by_id/:id/:userid', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const userid = req.params.userid;
+        const result = await pool.query('SELECT * FROM checkdam WHERE gid = $1 AND userid = $2', [id, userid]);
+        res.status(200).json({ success: true, data: result.rows[0] });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
     }
