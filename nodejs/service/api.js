@@ -33,14 +33,9 @@ app.post('/api/user', async (req, res) => {
     }
 });
 
-// update user by id
 app.put('/api/user', async (req, res) => {
     try {
-        // Destructure the fields from req.body
         const { userid, username, fname, lname, mooban, auth } = req.body;
-        console.log('Request body:', req.body);
-
-        // Update query
         const updateQuery = `
         UPDATE users
         SET 
@@ -70,6 +65,41 @@ app.put('/api/user', async (req, res) => {
     } catch (error) {
         console.error('Error updating user:', error);
         res.status(500).json({ success: false, error: 'Internal server error.' });
+    }
+});
+
+// get all users
+app.get('/api/user', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM users');
+        res.status(200).json({ success: true, data: result.rows });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// get user by id
+app.get('/api/user/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await pool.query('SELECT * FROM users WHERE userid = $1', [id]);
+        res.status(200).json({ success: true, data: result.rows[0] });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// delete user by userid
+app.delete('/api/user', async (req, res) => {
+    try {
+        const id = req.body.userid;
+        const result = await pool.query('DELETE FROM users WHERE userid = $1 RETURNING *', [id]);
+        res.status(200).json({ success: true, data: result.rows[0] });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: err.message });
     }
 });
 

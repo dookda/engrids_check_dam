@@ -50,8 +50,8 @@ fetch('/checkdam/api/getcheckdam')
                     data: 'gid',
                     render: function (data, type, row, meta) {
 
-                        return `<button class="btn btn-danger mb-1" onclick="deleteCheckdam(${row.gid})">ลบ</button>
-                                <button class="btn btn-warning mb-1" onclick="setUpdateForm(${row.gid})">แก้ไข</button>`;
+                        return `<button class="btn btn-danger" onclick="deleteCheckdam(${row.gid})">ลบ</button>
+                                <button class="btn btn-warning" onclick="setUpdateForm(${row.gid})">แก้ไข</button>`;
                     }
                 },
                 { data: 'cdname' },
@@ -82,7 +82,8 @@ fetch('/checkdam/api/getcheckdam')
                 //     }
                 // },
             ],
-            scrollX: true, destroy: true,
+            scrollX: true,
+            destroy: true,
             dom: 'Bfrtip',
             buttons: [
                 {
