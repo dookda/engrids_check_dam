@@ -189,6 +189,16 @@ app.get('/api/getcheckdam', async (req, res) => {
     }
 });
 
+app.get('/api/getcheckdam/:userid', async (req, res) => {
+    try {
+        const userid = req.params.userid;
+        const result = await pool.query('SELECT * FROM checkdam WHERE userid = $1', [userid]);
+        res.status(200).json({ success: true, data: result.rows });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
 app.get('/api/sumbymonth', async (req, res) => {
     try {
         const result = await pool.query(`

@@ -91,7 +91,7 @@ const showImages = (userid, cdimage) => {
         fetch(`/checkdam/api/getimages/${userid}/${cdimage}`)
             .then(response => response.json())
             .then(data => {
-                // console.log(data);
+                console.log(data);
                 const images = data.data;
                 if (images.length === 0) {
                     return;
@@ -115,6 +115,9 @@ const displayMarkers = (data) => {
             map.removeLayer(layer);
         }
     });
+
+    console.log(data);
+
 
     data.forEach(item => {
         const marker = L.marker([item.lat, item.lng], { name: 'marker', icon: redIcon }).addTo(map);

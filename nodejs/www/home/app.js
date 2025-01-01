@@ -1,7 +1,3 @@
-const updateProfile = (params) => {
-    console.log(params);
-}
-
 liff.init({
     liffId: "2006072569-DYNRWJaX",
     withLoginOnExternalBrowser: true,

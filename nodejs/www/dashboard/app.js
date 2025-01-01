@@ -1,3 +1,39 @@
+liff.init({
+    liffId: "2006072569-V84O0DYN",
+    withLoginOnExternalBrowser: true,
+}).then(() => {
+    liff.getProfile().then(profile => {
+        const userId = profile.userId;
+        const displayName = profile.displayName;
+        const pictureUrl = profile.pictureUrl;
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('logout').style.display = 'block';
+        document.getElementById('pictureUrl').src = pictureUrl;
+        document.getElementById('userid').value = userId;
+
+        fetch('/checkdam/api/user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userid: userId,
+                username: displayName
+            })
+        }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('ok');
+                } else {
+                    console.error('Error:', data.error);
+                }
+            }).catch(
+                err => console.error(err)
+            );
+    }).catch(
+        err => console.error(err)
+    );
+});
 
 const map = L.map('map').setView([19.01056856174532, 99.0359886593147], 13);
 
@@ -40,86 +76,101 @@ const redIcon = L.icon({
 });
 
 let checkdamData = [];
-fetch('/checkdam/api/getcheckdam')
-    .then(response => response.json())
-    .then(data => {
-        let table = $('#checkdamTable').DataTable({
-            data: data.data,
-            columns: [
-                {
-                    data: 'gid',
-                    render: function (data, type, row, meta) {
+const getAllData = async () => {
+    try {
+        const userId = document.getElementById('userid').value;
+        const response = await fetch('/checkdam/api/getcheckdam/' + userId);
+        if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.status}`);
+        }
 
-                        return `<button class="btn btn-danger" onclick="deleteCheckdam(${row.gid})">ลบ</button>
+        const data = await response.json();
+        if (data.success) {
+            if ($.fn.DataTable.isDataTable('#usersTable')) {
+                $('#checkdamTable').DataTable().destroy();
+            }
+
+            const table = $('#checkdamTable').DataTable({
+                data: data.data,
+                columns: [
+                    {
+                        data: 'gid',
+                        render: function (data, type, row, meta) {
+
+                            return `<button class="btn btn-danger" onclick="deleteCheckdam(${row.gid})">ลบ</button>
                                 <button class="btn btn-warning" onclick="setUpdateForm(${row.gid})">แก้ไข</button>`;
+                        }
+                    },
+                    { data: 'cdname' },
+                    { data: 'cdcreator' },
+                    { data: 'cddetail' },
+                    { data: 'cdtype' },
+                    {
+                        data: 'cddate',
+                        render: function (data, type, row, meta) {
+                            const thaiDate = new Date(data);
+                            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                            const thaiDateString = thaiDate.toLocaleDateString('th-TH', options);
+                            const buddhistYear = thaiDate.getFullYear() + 543;
+                            return thaiDateString.replace(thaiDate.getFullYear(), buddhistYear);
+                        }
+                    },
+                    {
+                        data: '',
+                        render: function (data, type, row, meta) {
+                            return `${row.lat}, ${row.lng}`;
+                        }
+                    },
+                    // {
+                    //     data: '',
+                    //     render: function (data, type, row, meta) {
+                    //         const img = row.cdimage ? row.cdimage : 'dashboard/placeholder-image.png';
+                    //         return `<img src="/checkdam/${img}" alt="ภาพฝาย" style="width: 100px; height: 100px;">`;
+                    //     }
+                    // },
+                ],
+                scrollX: true,
+                destroy: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Survey Data',
+                        text: 'ดาวโหลด Excel',
+                        className: 'custom-button'
                     }
-                },
-                { data: 'cdname' },
-                { data: 'cdcreator' },
-                { data: 'cddetail' },
-                { data: 'cdtype' },
-                {
-                    data: 'cddate',
-                    render: function (data, type, row, meta) {
-                        const thaiDate = new Date(data);
-                        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-                        const thaiDateString = thaiDate.toLocaleDateString('th-TH', options);
-                        const buddhistYear = thaiDate.getFullYear() + 543;
-                        return thaiDateString.replace(thaiDate.getFullYear(), buddhistYear);
-                    }
-                },
-                {
-                    data: '',
-                    render: function (data, type, row, meta) {
-                        return `${row.lat}, ${row.lng}`;
-                    }
-                },
-                // {
-                //     data: '',
-                //     render: function (data, type, row, meta) {
-                //         const img = row.cdimage ? row.cdimage : 'dashboard/placeholder-image.png';
-                //         return `<img src="/checkdam/${img}" alt="ภาพฝาย" style="width: 100px; height: 100px;">`;
-                //     }
-                // },
-            ],
-            scrollX: true,
-            destroy: true,
-            dom: 'Bfrtip',
-            buttons: [
-                {
-                    extend: 'excelHtml5',
-                    title: 'Survey Data',
-                    text: 'ดาวโหลด Excel',
-                    className: 'custom-button'
-                }
-            ]
-        });
+                ]
+            });
 
-        $('#search').on('keyup', function () {
-            let keyword = $(this).val();
-            table.search(keyword).draw();
-            // console.log('Current search keyword:', keyword);
-        });
+            $('#search').on('keyup', function () {
+                let keyword = $(this).val();
+                table.search(keyword).draw();
+                // console.log('Current search keyword:', keyword);
+            });
 
-        $('#clearSearch').on('click', function () {
-            $('#search').val('');
-            table.search('').draw();
-        });
+            $('#clearSearch').on('click', function () {
+                $('#search').val('');
+                table.search('').draw();
+            });
 
-        let filteredData = table.rows({ filter: 'applied' }).data().toArray();
-        displayMarkers(filteredData);
-        displayChart(filteredData);
-        updateCards(filteredData);
-
-        table.on('search.dt', function () {
-            let filteredData = table.rows({ search: 'applied' }).data().toArray();
+            let filteredData = table.rows({ filter: 'applied' }).data().toArray();
             displayMarkers(filteredData);
             displayChart(filteredData);
             updateCards(filteredData);
-        });
-    })
-    .catch(err => console.error(err));
 
+            table.on('search.dt', function () {
+                let filteredData = table.rows({ search: 'applied' }).data().toArray();
+                displayMarkers(filteredData);
+                displayChart(filteredData);
+                updateCards(filteredData);
+            });
+        } else {
+            console.error('Error (API response):', data.error);
+        }
+    } catch (error) {
+        console.error('Error getting all checkdams:', error);
+    }
+}
 const updateCards = (data) => {
     const totalCheckdams = data.length;
     document.getElementById('totalcd').textContent = `${totalCheckdams} ฝาย`;
@@ -279,14 +330,24 @@ document.getElementById('search').addEventListener('input', function () {
     }
 });
 
+const openToast = () => {
+    var toast = new bootstrap.Toast(document.getElementById('myToast'));
+    toast.show();
+
+    setTimeout(function () {
+        toast.hide();
+
+    }, 3000);
+}
+
 // delete checkdam function
 const deleteCheckdam = async (id) => {
     try {
         const response = await fetch(`/checkdam/api/deletecheckdam/${id}`, { method: 'DELETE' });
         const data = await response.json();
         if (data.success) {
-            console.log('Checkdam deleted:', data.data);
-            location.reload();
+            openToast();
+            getAllData();
         } else {
             console.error('Error deleting checkdam:', data.error);
         }
@@ -314,4 +375,8 @@ document.getElementById('clearSearch').addEventListener('click', function () {
     } catch (error) {
         console.error('Error resetting search:', error);
     }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    getAllData();
 });

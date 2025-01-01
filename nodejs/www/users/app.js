@@ -1,7 +1,3 @@
-const updateProfile = (params) => {
-    console.log(params);
-}
-
 liff.init({
     liffId: "2006072569-6p3kO2r9",
     withLoginOnExternalBrowser: true,
@@ -166,8 +162,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const result = await response.json();
             if (result.success) {
                 openToast();
-                userModal.hide();
                 getAllUsers();
+                userModal.hide();
             }
         } catch (error) {
             console.error('Error:', error);
