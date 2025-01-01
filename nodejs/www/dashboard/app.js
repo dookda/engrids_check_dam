@@ -24,6 +24,7 @@ liff.init({
             .then(data => {
                 if (data.success) {
                     console.log('ok');
+                    document.getElementById('auth').value = data.data.auth;
                     getAllData();
                 } else {
                     console.error('Error:', data.error);
@@ -83,9 +84,12 @@ let checkdamData = [];
 const getAllData = async () => {
     try {
         const userId = document.getElementById('userid').value;
+        const auth = document.getElementById('auth').value;
+
         console.log(userId);
 
-        const response = await fetch('/checkdam/api/getcheckdam_by_userid/' + userId);
+        const url = auth === 'admin' ? '/checkdam/api/getcheckdam' : '/checkdam/api/getcheckdam_by_userid/' + userId;
+        const response = await fetch(url);
         if (!response.ok) {
             throw new Error(`Network response was not ok: ${response.status}`);
         }
