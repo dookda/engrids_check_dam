@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgis/postgis
+    container_name: my_next15_postgis
+    restart: always
+    environment:
+      - TZ=Asia/Bangkok
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=data
+    volumes:
+      # - ./dbsql/:/docker-entrypoint-initdb.d
+      - ./dbdata:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+  web:
+    build: .
+    container_name: my_next15_web
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: 1234
+      DB_NAME: data
+    volumes:
+      - .:/app
+    command: sh -c "npm run dev"
