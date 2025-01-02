@@ -16,7 +16,7 @@ export default async function Home() {
 
   return (
     <main>
-      <h1>Next.js + Postgres (pg) + Docker Compose</h1>
+      <h1>da + Docker Compose</h1>
       <h2>Users</h2>
       <ul>
         {users.map((user) => (
