@@ -18,14 +18,3 @@ const pool = new Pool({
 })
 
 export default pool
-
-export async function testDBConnection() {
-    try {
-        const client = await pool.connect()
-        await client.query('SELECT NOW()')
-        client.release()
-        console.log('Connected to PostgreSQL successfully!')
-    } catch (err) {
-        console.error('Failed to connect to PostgreSQL', err)
-    }
-}

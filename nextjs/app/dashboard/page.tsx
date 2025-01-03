@@ -22,8 +22,6 @@ const page = () => {
                 </div>
 
                 <Map />
-                <Map />
-                <Map />
             </div>
 
         </div>

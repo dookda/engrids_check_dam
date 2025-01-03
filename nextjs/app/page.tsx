@@ -2,7 +2,7 @@
 import pool, { testDBConnection } from '@/db'
 
 export default async function Home() {
-  // ทดสอบการเชื่อมต่อ (optional)
+
   await testDBConnection()
 
   // ลอง query ข้อมูล (สมมติว่าเรามีตาราง users)
