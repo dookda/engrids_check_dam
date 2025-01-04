@@ -11,7 +11,11 @@ declare module 'leaflet' {
     }
 }
 
-const Map = () => {
+interface MapProps {
+    onCoordinateSelect?: (lat: number, lng: number) => void;
+}
+
+const Map = ({ onCoordinateSelect }: MapProps) => {
     const mapRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -94,6 +98,9 @@ const Map = () => {
                 .openPopup()
 
             featureGroup.addLayer(marker)
+            if (onCoordinateSelect) {
+                onCoordinateSelect(e.latlng.lat, e.latlng.lng)
+            }
 
             // วาดวงกลมแสดงระยะ
             L.circle(e.latlng, { name: 'circle', radius }).addTo(map)
@@ -145,6 +152,9 @@ const Map = () => {
                 .openPopup()
 
             featureGroup.addLayer(marker)
+            if (onCoordinateSelect) {
+                onCoordinateSelect(e.latlng.lat, e.latlng.lng)
+            }
         }
 
         // ผูก event

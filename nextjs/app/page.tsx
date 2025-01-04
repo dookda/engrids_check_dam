@@ -1,9 +1,7 @@
 // app/page.tsx
-import pool, { testDBConnection } from '@/db'
+import pool from '@/db'
 
 export default async function Home() {
-
-  await testDBConnection()
 
   // ลอง query ข้อมูล (สมมติว่าเรามีตาราง users)
   let users: any[] = []
