@@ -106,7 +106,7 @@ const FormSurvey = () => {
 
 
 
-                <button type='submit' className="btn btn-dash btn-success mt-2">Insert</button>
+                <button type='submit' className="btn btn-dash btn-success mt-2">บันทึกข้อมูล</button>
             </form>
         </div>
     )

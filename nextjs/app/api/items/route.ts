@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import pool from '@/db'
+import pool from '@/lib'
 
 // 1) GET: ดึงรายการทั้งหมดจากตาราง items
 export async function GET() {

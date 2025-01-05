@@ -1,5 +1,5 @@
 // app/page.tsx
-import pool from '@/db'
+import pool from '@/lib'
 
 export default async function Home() {
 

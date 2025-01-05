@@ -6,7 +6,7 @@ export default function Header() {
     return (
         <div className="navbar fixed top-0 left-0 w-full z-50 bg-transparent backdrop-blur-sm">
             <div className="flex-1">
-                <a className="btn btn-ghost text-xl">daisyUI</a>
+                <a className="btn btn-ghost text-xl">บันทึกฝาย</a>
             </div>
             <div className="flex-none">
                 <div className="dropdown dropdown-end">
