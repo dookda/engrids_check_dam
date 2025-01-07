@@ -9,20 +9,20 @@ interface ImageUploadProps {
     onChange: (base64: string) => void
 }
 
-
-
 export default function ImageUpload({
     label = 'Upload Image',
     maxWidth = 300,
     maxHeight = 300,
+    value = "",
     onChange,
 }: ImageUploadProps) {
-    const [preview, setPreview] = useState<string>('')
+
+    const [preview, setPreview] = useState<string>(value)
+
     useEffect(() => {
-        if (value) {
-            setPreview(value)
-        }
-    })
+        setPreview(value)
+    }, [value])
+
     // ฟังก์ชัน handle เมื่อผู้ใช้เลือกไฟล์
     async function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0]
@@ -63,6 +63,7 @@ export default function ImageUpload({
                 canvas.width = width
                 canvas.height = height
                 const ctx = canvas.getContext('2d')
+
                 if (!ctx) return reject('Cannot get 2d context from canvas')
 
                 // วาดรูปลง canvas
@@ -80,7 +81,12 @@ export default function ImageUpload({
     return (
         <div className="mb-4">
             <label className="block font-semibold mb-1">{label}</label>
-            <input type="file" accept="image/*" onChange={handleFileChange} />
+            <input
+                className="file-input"
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                placeholder="You can't touch this" />
 
             {/* แสดงตัวอย่างรูปที่อัปโหลด */}
             {preview && (

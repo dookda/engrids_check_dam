@@ -22,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" data-theme="cupcake" >
+    <html lang="en" data-theme="bumblebee" >
       <body className={notoSansThai.className}>
         <Header />
         <main className="p-4">
