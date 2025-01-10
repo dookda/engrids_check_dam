@@ -5,7 +5,6 @@ import { NextResponse } from 'next/server'
 export const GET = async () => {
     try {
         const result = await pool.query('SELECT * FROM checkdam ORDER BY gid ASC')
-
         return NextResponse.json({ items: result.rows }, { status: 200 })
     } catch (error) {
         console.error('Error fetching items:', error)

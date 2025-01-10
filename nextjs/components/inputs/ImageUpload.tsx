@@ -82,7 +82,7 @@ export default function ImageUpload({
         <div className="mb-4">
             <label className="block font-semibold mb-1">{label}</label>
             <input
-                className="file-input"
+                className="file-input input-bordered w-full"
                 type="file"
                 accept="image/*"
                 onChange={handleFileChange}

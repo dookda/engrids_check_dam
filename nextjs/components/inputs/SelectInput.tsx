@@ -18,7 +18,7 @@ const SelectInput = ({ label, value, onChange, required = false, options }: Sele
         <div>
             <label className="block font-semibold">{label}</label>
             <select
-                className="select p-2 w-full"
+                className="select input-bordered p-2 w-full"
                 value={value}
                 onChange={(e) => onChange(e.target.value)}>
                 {options.map((opt) => (<option key={opt.value} value={opt.value}>{opt.label}</option>))}

@@ -1,12 +1,16 @@
-import Map from '@/components/Map'
+
+import DataTable from '@/components/Datatable'
+import MapReport from '@/components/MapReport'
 import React from 'react'
 
-const page = () => {
+const Page = () => {
     return (
         <>
-            <Map />
+            {/* <MapReport /> */}
+
+            <DataTable />
         </>
     )
 }
 
-export default page
+export default Page

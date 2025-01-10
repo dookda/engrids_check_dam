@@ -15,6 +15,6 @@ export default {
     },
   },
   plugins: [
-    require('bumblebee'),
+    require('pastel'),
   ],
 } satisfies Config;

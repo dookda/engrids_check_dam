@@ -14,7 +14,7 @@ const TextInput = ({ label, value, onChange, required = false }: TextInputProps)
             <label className="block font-semibold">{label}</label>
             <input
                 type="text"
-                className="input p-2 w-full"
+                className="input input-bordered p-2 w-full"
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 required={required}

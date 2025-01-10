@@ -12,7 +12,7 @@ const TextAreaInput = ({ label, value, onChange, required = false, rows = 3 }: T
         <div>
             <label className="block font-semibold">{label}</label>
             <textarea
-                className="textarea p-2 w-full"
+                className="textarea input-bordered p-2 w-full"
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 required={required}
