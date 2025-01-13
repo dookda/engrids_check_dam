@@ -78,6 +78,7 @@ export default function Map({ onGetLocation }: MapProps) {
             lc.start();
 
             map.on('locationfound', (e: any) => {
+                featureGroup.clearLayers();
                 onGetLocation(e.latlng);
             });
 
