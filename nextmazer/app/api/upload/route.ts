@@ -15,8 +15,6 @@ export async function POST(request: any) {
             );
         }
 
-        console.log(formData);
-
         // Convert image to buffer
         const buffer = Buffer.from(await image.arrayBuffer());
 
