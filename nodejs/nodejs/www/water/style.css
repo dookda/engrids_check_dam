@@ -1,0 +1,53 @@
+body {
+    font-family: "Noto Sans Thai", system-ui;
+    font-optical-sizing: auto;
+}
+
+.leaflet-popup-content {
+    font-size: 1.2em;
+    font-family: "Noto Sans Thai", system-ui;
+}
+
+#map {
+    height: 70vh;
+    width: 100%;
+}
+
+#pictureUrl {
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+}
+
+.text-title {
+    margin-top: 0;
+    font-size: 1.5em;
+    font-weight: 700;
+    line-height: 0.2;
+    color: #25396f;
+}
+
+.dropdown-menu {
+    opacity: 0.9;
+    z-index: 2000;
+    text-wrap: normal;
+}
+
+#searchDropdown {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#searchDropdown .dropdown-item {
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    padding: 10px;
+    cursor: pointer;
+}
+
+#searchDropdown .dropdown-item:hover {
+    background-color: #f0f0f0;
+    color: #435ebe;
+}
