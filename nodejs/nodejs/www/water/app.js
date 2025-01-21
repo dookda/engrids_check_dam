@@ -142,8 +142,7 @@ const updateMarker = () => {
     L.marker([lat, lng], { name: 'marker', icon: redIcon })
         .addTo(map)
         .bindPopup(`ตำแหน่งที่เลือก
-            <br>พิกัด: ${lat}, ${lng}
-            <br><button class="btn btn-info" onclick="openModal()">เพิ่มข้อมูลให้ตำแหน่งนี้</button>`)
+            <br>พิกัด: ${lat}, ${lng}`)
         .openPopup();
 
     map.setView([lat, lng], 16);
