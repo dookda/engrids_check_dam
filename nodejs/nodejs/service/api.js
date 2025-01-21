@@ -316,6 +316,20 @@ app.put('/api/updatecheckdam/:id', upload.single('cdimage'), async (req, res) =>
     }
 });
 
+app.post('/api/water', async (req, res) => {
+    try {
+        const { userid, stationname, watertype, waterlevel, waterflow, lat, lng } = req.body;
+        const result = await pool.query(
+            'INSERT INTO water (userid, stationname, watertype, waterlevel, waterflow, lat, lng) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+            [userid, stationname, watertype, waterlevel, waterflow, lat, lng]
+        );
+        res.status(200).json({ success: true, data: result.rows[0] });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
 
 // export module
 module.exports = app;

@@ -1,5 +1,5 @@
 liff.init({
-    liffId: "2006072569-DYNRWJaX",
+    liffId: "2006072569-L2vXWNgB",
     withLoginOnExternalBrowser: true,
 }).then(() => {
     liff.getProfile().then(profile => {
@@ -128,9 +128,7 @@ const onMapClick = (e) => {
     document.getElementById('lng').value = e.latlng.lng;
     L.marker(e.latlng, { name: 'marker', icon: redIcon })
         .addTo(map)
-        .bindPopup(`ตำแหน่งที่เลือก
-            <br>พิกัด: ${(e.latlng.lat).toFixed(4)}, ${(e.latlng.lng).toFixed(4)}
-            <br><button class="btn btn-info" onclick="openModal()">เพิ่มข้อมูลให้ตำแหน่งนี้</button>`)
+        .bindPopup(`ตำแหน่งที่เลือก <br>พิกัด: ${(e.latlng.lat).toFixed(4)}, ${(e.latlng.lng).toFixed(4)}`)
         .openPopup();
 
     map.setView([e.latlng.lat, e.latlng.lng]);
@@ -156,21 +154,53 @@ map.on('locationerror', onLocationError);
 map.on('click', onMapClick);
 
 document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('checkDamForm');
+    const waterLabel = document.getElementById("waterlabel");
+    const waterType = document.getElementById("watertype");
+    const waterFlowGroup = document.getElementById("waterflow-group");
+
+    function toggleWaterLevel() {
+        if (waterType.value === "ปริมาณน้ำฝน") {
+            waterLabel.innerHTML = "ปริมาณน้ำฝน (มิลลิเมตร)";
+            waterFlowGroup.style.display = "none";
+        } else {
+            waterLabel.innerHTML = "ระดับน้ำ (เซนติเมตร)";
+            waterFlowGroup.style.display = "block";
+        }
+    }
+
+    waterType.addEventListener("change", toggleWaterLevel);
+    toggleWaterLevel();
+
+    const form = document.getElementById('waterForm');
 
     form.addEventListener('submit', async function (e) {
         e.preventDefault();
-
-        const formData = new FormData(this);
+        // const formdata = new FormData(form);
         const lat = document.getElementById('lat').value;
         const lng = document.getElementById('lng').value;
-        formData.append('lat', lat);
-        formData.append('lng', lng);
+        const userid = document.getElementById('userid').value;
+        const stationname = document.getElementById('stationname').value;
+        const watertype = document.getElementById('watertype').value;
+        const waterlevel = document.getElementById('waterlevel').value;
+        const waterflow = document.getElementById('waterflow').value;
+
+        console.log(userid, stationname, watertype, waterlevel, waterflow, lat, lng);
 
         try {
-            const response = await fetch('/checkdam/api/submitform', {
+            const response = await fetch('/checkdam/api/water', {
                 method: 'POST',
-                body: formData
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userid,
+                    stationname,
+                    watertype,
+                    waterlevel: waterlevel === "" ? 0 : waterlevel,
+                    waterflow: waterflow === "" ? 0 : waterflow,
+                    lat,
+                    lng
+                }),
             });
 
             if (!response.ok) {
@@ -178,14 +208,15 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             const result = await response.json();
-            var modal = bootstrap.Modal.getInstance(document.getElementById('inputModal'));
-            modal.hide();
+            // var modal = bootstrap.Modal.getInstance(document.getElementById('inputModal'));
+            // modal.hide();
+
             form.reset();
             openToast();
+            removeMarker();
+            toggleWaterLevel();
         } catch (error) {
             console.error('Error:', error);
         }
     });
 });
-
-// document.getElementById('cddate').valueAsDate = new Date();
