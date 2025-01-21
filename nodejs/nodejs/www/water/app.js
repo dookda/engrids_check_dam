@@ -116,8 +116,7 @@ const onLocationFound = (e) => {
     L.marker(e.latlng, { name: 'marker', icon: redIcon })
         .addTo(map)
         .bindPopup(`ตำแหน่งของท่าน
-            <br>พิกัด: ${(e.latlng.lat).toFixed(4)}, ${(e.latlng.lng).toFixed(4)}
-            <br><button class="btn btn-info" onclick="openModal()">เพิ่มข้อมูลให้ตำแหน่งนี้</button>`)
+            <br>พิกัด: ${(e.latlng.lat).toFixed(4)}, ${(e.latlng.lng).toFixed(4)}`)
         .openPopup();
 }
 
