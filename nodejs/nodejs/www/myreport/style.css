@@ -1,0 +1,38 @@
+body {
+    font-family: "Noto Sans Thai", system-ui;
+    font-optical-sizing: auto;
+}
+
+.leaflet-popup-content {
+    font-size: 1.2em;
+    font-family: "Noto Sans Thai", system-ui;
+}
+
+#map {
+    height: 50vh;
+    width: 100%;
+}
+
+#pictureUrl {
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+}
+
+.text-title {
+    margin-top: 0;
+    font-size: 1.5em;
+    font-weight: 700;
+    line-height: 0.2;
+    color: #25396f;
+}
+
+.dataTables_wrapper thead th {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.text-nowrap {
+    white-space: nowrap;
+}
