@@ -35,6 +35,10 @@ liff.init({
     );
 });
 
+function closeLiff() {
+    liff.closeWindow();
+}
+
 document.getElementById('login').style.display = 'block';
 document.getElementById('logout').style.display = 'none';
 
@@ -152,17 +156,17 @@ map.on('locationerror', onLocationError);
 map.on('click', onMapClick);
 
 document.addEventListener('DOMContentLoaded', function () {
-    const waterLabel = document.getElementById("waterlabel");
     const waterType = document.getElementById("watertype");
     const waterFlowGroup = document.getElementById("waterflow-group");
+    const rainGroup = document.getElementById("rain-group");
 
     function toggleWaterLevel() {
         if (waterType.value === "ปริมาณน้ำฝน") {
-            waterLabel.innerHTML = "ปริมาณน้ำฝน (มิลลิเมตร)";
             waterFlowGroup.style.display = "none";
+            rainGroup.style.display = "block";
         } else {
-            waterLabel.innerHTML = "ระดับน้ำ (เซนติเมตร)";
             waterFlowGroup.style.display = "block";
+            rainGroup.style.display = "none";
         }
     }
 
@@ -179,10 +183,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const userid = document.getElementById('userid').value;
         const stationname = document.getElementById('stationname').value;
         const watertype = document.getElementById('watertype').value;
-        const waterlevel = document.getElementById('waterlevel').value;
+        const rain = document.getElementById('rain').value;
+        const waterupper = document.getElementById('waterupper').value;
+        const waterlower = document.getElementById('waterlower').value;
+        const waterheight = document.getElementById('waterheight').value;
         const waterflow = document.getElementById('waterflow').value;
-
-        console.log(userid, stationname, watertype, waterlevel, waterflow, lat, lng);
 
         try {
             const response = await fetch('/checkdam/api/water', {
@@ -192,12 +197,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 body: JSON.stringify({
                     userid,
+                    lat,
+                    lng,
                     stationname,
                     watertype,
-                    waterlevel: waterlevel === "" ? 0 : waterlevel,
-                    waterflow: waterflow === "" ? 0 : waterflow,
-                    lat,
-                    lng
+                    rain: rain === '' ? 0 : rain,
+                    waterupper: waterupper === '' ? 0 : waterupper,
+                    waterlower: waterlower === '' ? 0 : waterlower,
+                    waterheight: waterheight === '' ? 0 : waterheight,
+                    waterflow: waterflow === '' ? 0 : waterflow
                 }),
             });
 

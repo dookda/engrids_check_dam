@@ -318,12 +318,40 @@ app.put('/api/updatecheckdam/:id', upload.single('cdimage'), async (req, res) =>
 
 app.post('/api/water', async (req, res) => {
     try {
-        const { userid, stationname, watertype, waterlevel, waterflow, lat, lng } = req.body;
-        const result = await pool.query(
-            'INSERT INTO water (userid, stationname, watertype, waterlevel, waterflow, lat, lng) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
-            [userid, stationname, watertype, waterlevel, waterflow, lat, lng]
-        );
-        res.status(200).json({ success: true, data: result.rows[0] });
+        const { userid, stationname, watertype, rain, waterupper, waterlower, waterheight, waterflow, lat, lng } = req.body;
+
+        let sql = '';
+
+        if (watertype === 'ปริมาณน้ำฝน') {
+            sql = 'INSERT INTO water (userid, stationname, watertype, rain, lat, lng) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
+            pool.query(sql, [userid, stationname, watertype, rain, lat, lng], (error, result) => {
+                if (error) {
+                    console.error('DB insert error:', error);
+                    return res.status(500).json({ success: false, message: 'Database error', error: error });
+                }
+
+                return res.json({
+                    success: true,
+                    message: 'Water data inserted successfully',
+                    data: result.rows[0]
+                });
+            });
+        } else {
+            sql = 'INSERT INTO water (userid, stationname, watertype, waterupper, waterlower, waterheight, waterflow, lat, lng) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *';
+            pool.query(sql, [userid, stationname, watertype, waterupper, waterlower, waterheight, waterflow, lat, lng], (error, result) => {
+                if (error) {
+                    console.error('DB insert error:', error);
+                    return res.status(500).json({ success: false, message: 'Database error', error: error });
+                }
+
+                return res.json({
+                    success: true,
+                    message: 'Water data inserted successfully',
+                    data: result.rows[0]
+                });
+            });
+        }
+
     } catch (err) {
         console.error(err);
         res.status(500).json({ success: false, error: err.message });

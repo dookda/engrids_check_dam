@@ -68,12 +68,12 @@
                     <input type="text" class="form-control" step="0.1" id="lng" name="lng" placeholder="ลองจิจูด"
                         onkeyup="updateMarker()" required>
                 </div>
-                <div class="form-group"><label>ชื่อสถานที่: </label>
+                <div class="form-group"><label>ชื่อสถานที่ </label>
                     <div class="form-group">
                         <input type="text" name="stationname" id="stationname" class="form-control" required>
                     </div>
                 </div>
-                <div class="form-group"><label>ประเภทข้อมูล: </label>
+                <div class="form-group"><label>ประเภทข้อมูล </label>
                     <div class="form-group">
                         <select name="watertype" id="watertype" class="form-select">
                             <option value="ปริมาณน้ำฝน">ปริมาณน้ำฝน</option>
@@ -81,23 +81,57 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label id="waterlabel"></label>
+                <div class="form-group" id="rain-group">
+                    <div class="">
+                        <img src="./../assets/rain.png" alt="" class="img-fluid">
+                    </div>
+
+                    <label>ปริมาณน้ำฝน (มิลลิเมตร)</label>
                     <div class="form-group">
-                        <input type="number" step="0.1" name="waterlevel" id="waterlevel" class="form-control"
-                            required />
+                        <input type="number" step="0.1" name="rain" id="rain" class="form-control" value=0.0 />
                     </div>
                 </div>
-                <div class="form-group" id="waterflow-group">
-                    <label>การไหล (เซนติเมตร/วินาที): </label>
+                <div id="waterflow-group">
+                    <div class="">
+                        <img src="./../assets/profile.png" alt="" class="img-fluid">
+                    </div>
+
                     <div class="form-group">
-                        <input type="number" step="0.1" name="waterflow" id="waterflow" class="form-control" />
+                        <label>ผิวน้ำ (เซนติเมตร) </label>
+                        <div class="form-group">
+                            <input type="number" step="0.1" name="waterupper" id="waterupper" class="form-control"
+                                value=0.0 />
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="waterflow-group">
+                        <label>ท้องน้ำ (เซนติเมตร) </label>
+                        <div class="form-group">
+                            <input type="number" step="0.1" name="waterlower" id="waterlower" class="form-control"
+                                value=0.0 />
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="waterflow-group">
+                        <label>ความลึก (เซนติเมตร) </label>
+                        <div class="form-group">
+                            <input type="number" step="0.1" name="waterheight" id="waterheight" class="form-control"
+                                value=0.0 />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>อัตราการไหล (เมตร/นาที) </label>
+                        <div class="form-group">
+                            <input type="number" step="0.1" name="waterflow" id="waterflow" class="form-control"
+                                value=0.0 />
+                        </div>
                     </div>
                 </div>
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-bs-dismiss="modal">ยกเลิก</button>
+                <button type="button" class="btn btn-light" onclick="closeLiff()">ปิด</button>
                 <button type="submit" class="btn btn-primary">บันทึก</button>
             </div>
         </form>

@@ -44,6 +44,10 @@ liff.init({
     );
 });
 
+function closeLiff() {
+    liff.closeWindow();
+}
+
 document.getElementById('login').style.display = 'block';
 document.getElementById('logout').style.display = 'none';
 
