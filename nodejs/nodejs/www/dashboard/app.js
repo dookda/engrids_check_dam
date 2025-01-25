@@ -80,6 +80,16 @@ const redIcon = L.icon({
     popupAnchor: [0, -32]
 });
 
+const zoomCheckdam = (lat, lng, cdname, cdcreator) => {
+    map.setView([lat, lng], 18);
+    var popup = L.popup()
+        .setLatLng([lat, lng])
+        .setContent(`<p>${cdname}<br />โดย ${cdcreator}</p>`);
+
+    popup.options.offset = L.point(0, -22)
+    popup.openOn(map);
+};
+
 let checkdamData = [];
 const getAllData = async () => {
     try {
@@ -88,7 +98,7 @@ const getAllData = async () => {
 
         console.log(userId);
 
-        const url = auth === 'admin' ? '/checkdam/api/getcheckdam' : '/checkdam/api/getcheckdam_by_userid/' + userId;
+        const url = '/checkdam/api/getcheckdam';
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error(`Network response was not ok: ${response.status}`);
@@ -106,9 +116,14 @@ const getAllData = async () => {
                     {
                         data: 'gid',
                         render: function (data, type, row, meta) {
+                            console.log(row);
 
-                            return `<button class="btn btn-danger" onclick="deleteCheckdam(${row.gid})">ลบ</button>
-                                <button class="btn btn-warning" onclick="setUpdateForm(${row.gid}, '${row.userid}')">แก้ไข</button>`;
+                            const btn = auth === 'admin' ? `<button class="btn btn-info" onclick="zoomCheckdam(${row.lat}, ${row.lng}, '${row.cdname}', '${row.cdcreator}')">ซูม</button>
+                                <button class="btn btn-danger" onclick="deleteCheckdam(${row.gid})">ลบ</button>
+                                <button class="btn btn-warning" onclick="setUpdateForm(${row.gid}, '${row.userid}')">แก้ไข</button>`
+                                : `<button class="btn btn-info" onclick="zoomCheckdam(${row.lat}, ${row.lng}, '${row.cdname}', '${row.cdcreator}')">ซูม</button>`;
+
+                            return btn;
                         }
                     },
                     { data: 'cdname' },
@@ -131,13 +146,6 @@ const getAllData = async () => {
                             return `${row.lat}, ${row.lng}`;
                         }
                     },
-                    // {
-                    //     data: '',
-                    //     render: function (data, type, row, meta) {
-                    //         const img = row.cdimage ? row.cdimage : 'dashboard/placeholder-image.png';
-                    //         return `<img src="/checkdam/${img}" alt="ภาพฝาย" style="width: 100px; height: 100px;">`;
-                    //     }
-                    // },
                 ],
                 scrollX: true,
                 destroy: true,
