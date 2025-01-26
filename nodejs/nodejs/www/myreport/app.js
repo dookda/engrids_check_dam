@@ -94,11 +94,7 @@ let checkdamData = [];
 const getAllData = async () => {
     try {
         const userId = document.getElementById('userid').value;
-        const auth = document.getElementById('auth').value;
-
-        console.log(userId);
-
-        const url = auth === 'admin' ? '/checkdam/api/getcheckdam' : '/checkdam/api/getcheckdam_by_userid/' + userId;
+        const url = '/checkdam/api/getcheckdam_by_userid/' + userId;
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error(`Network response was not ok: ${response.status}`);
